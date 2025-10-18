@@ -1,0 +1,49 @@
+[gd_scene load_steps=8 format=3 uid="uid://dn81rpmtx4ouf"]
+
+[ext_resource type="Script" uid="uid://c5i3eu3fdttp0" path="res://touch_controls.gd" id="1_0x8km"]
+[ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="1_1gcqp"]
+[ext_resource type="Texture2D" uid="uid://dtke44b6fhgu7" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice33.svg" id="2_ep0mg"]
+[ext_resource type="Texture2D" uid="uid://cdcm5sy2ve4v8" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice30.png" id="4_qpxdh"]
+[ext_resource type="Texture2D" uid="uid://s1u2iv0v0dr5" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice29.png" id="4_rq6v7"]
+[ext_resource type="Texture2D" uid="uid://cgmtjfymmtrdc" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice35.png" id="6_gv3ke"]
+[ext_resource type="Texture2D" uid="uid://dstturay1ksoo" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice28.png" id="7_gv3ke"]
+
+[node name="TouchControls" type="CanvasLayer"]
+layer = 100
+script = ExtResource("1_0x8km")
+
+[node name="Virtual Joystick" parent="." instance=ExtResource("1_1gcqp")]
+offset_top = -120.0
+offset_right = 400.0
+offset_bottom = 280.0
+scale = Vector2(0.3, 0.3)
+clampzone_size = 15.0
+joystick_mode = 1
+
+[node name="AtkButton" type="TouchScreenButton" parent="."]
+modulate = Color(1, 1, 1, 0.56078434)
+position = Vector2(420, 200)
+scale = Vector2(0.25, 0.25)
+texture_normal = ExtResource("2_ep0mg")
+texture_pressed = ExtResource("4_rq6v7")
+
+[node name="DashButton" type="TouchScreenButton" parent="."]
+modulate = Color(1, 1, 1, 0.56078434)
+position = Vector2(375, 225)
+scale = Vector2(0.15, 0.15)
+texture_normal = ExtResource("4_qpxdh")
+texture_pressed = ExtResource("4_rq6v7")
+
+[node name="ParryButton" type="TouchScreenButton" parent="."]
+modulate = Color(1, 1, 1, 0.56078434)
+position = Vector2(445, 150)
+scale = Vector2(0.15, 0.15)
+texture_normal = ExtResource("6_gv3ke")
+texture_pressed = ExtResource("4_rq6v7")
+
+[node name="SpAtkButton" type="TouchScreenButton" parent="."]
+modulate = Color(1, 1, 1, 0.56078434)
+position = Vector2(405, 160)
+scale = Vector2(0.15, 0.15)
+texture_normal = ExtResource("7_gv3ke")
+texture_pressed = ExtResource("4_rq6v7")
