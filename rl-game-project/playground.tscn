@@ -1,6 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://bthjn5kha44lj"]
+[gd_scene load_steps=10 format=3 uid="uid://bthjn5kha44lj"]
 
 [ext_resource type="PackedScene" uid="uid://dhwbw4xat3ger" path="res://Player/player.tscn" id="1_wt17y"]
+[ext_resource type="Script" uid="uid://8q28u2xype6y" path="res://playground_ui.gd" id="3_4bqqs"]
+[ext_resource type="Texture2D" uid="uid://j36uk8c6o4b1" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice46.png" id="4_ynsuh"]
+[ext_resource type="Texture2D" uid="uid://s1u2iv0v0dr5" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice29.png" id="5_v7dth"]
+[ext_resource type="Texture2D" uid="uid://chrf23cgwx70c" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice36.png" id="6_pi42a"]
 [ext_resource type="PackedScene" uid="uid://dn81rpmtx4ouf" path="res://touch_controls.tscn" id="151_e5p2i"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wt17y"]
@@ -40,3 +44,21 @@ modulate = Color(0.24136353, 0.14240974, 0.85045916, 1)
 position = Vector2(-24.499956, -1.9073486e-06)
 scale = Vector2(2.105469, 20.000004)
 texture = SubResource("CurveXYZTexture_wt17y")
+
+[node name="PlaygroundUI" type="CanvasLayer" parent="."]
+script = ExtResource("3_4bqqs")
+
+[node name="DamageButton" type="TouchScreenButton" parent="PlaygroundUI"]
+position = Vector2(390, 5)
+scale = Vector2(0.15, 0.15)
+texture_normal = ExtResource("4_ynsuh")
+texture_pressed = ExtResource("5_v7dth")
+
+[node name="ResetButton" type="TouchScreenButton" parent="PlaygroundUI"]
+position = Vector2(435, 5)
+scale = Vector2(0.15, 0.15)
+texture_normal = ExtResource("6_pi42a")
+texture_pressed = ExtResource("5_v7dth")
+
+[connection signal="pressed" from="PlaygroundUI/DamageButton" to="PlaygroundUI" method="_on_damage_button_pressed"]
+[connection signal="pressed" from="PlaygroundUI/ResetButton" to="PlaygroundUI" method="_on_reset_button_pressed"]
