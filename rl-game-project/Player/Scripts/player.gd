@@ -1,94 +1,101 @@
 extends "res://Player/Scripts/player_api.gd"
 class_name Player
 
+## Concrete Player implementation - kết nối State Machine và Controller
+## Xử lý lifecycle, touch controls, và delegates input/physics cho State Machine
+
+@onready var state_machine: PlayerStateMachine = $StateMachine
+@onready var controller: PlayerController = $Controller
+@onready var stats_ui: CanvasLayer = $UI/StatsUI  # Stats UI để hiển thị level/stats
+
 func _ready() -> void:
-	current_health = max_health
+	# === INITIALIZE STATS SYSTEM ===
+	# Tạo base stats nếu chưa có
+	if not base_stats:
+		base_stats = PlayerStats.new()
+		print("[Player] Created new PlayerStats")
+	
+	# Initialize runtime stats
+	if runtime_stats:
+		runtime_stats.initialize(base_stats)
+		# Connect runtime stats signals
+		runtime_stats.health_changed.connect(_on_runtime_health_changed)
+		runtime_stats.health_depleted.connect(_on_death)
+	else:
+		push_error("[Player] RuntimeStats node not found! Add it to scene.")
+	
+	# Setup animation và UI
 	if animated_sprite:
 		animated_sprite.play(&"idle")
+	
 	if health_bar:
-		health_bar.init_health(max_health)
-		health_bar.health = current_health
-	health_changed.emit(current_health, max_health)
-	if touch_controls:
-		touch_controls.attack_pressed.connect(_on_attack_pressed)
-		touch_controls.dash_pressed.connect(_on_dash_pressed)
-		touch_controls.parry_pressed.connect(_on_parry_pressed)
-		touch_controls.sp_atk_pressed.connect(_on_sp_atk_pressed)
-	else:
-		push_warning("TouchControls not assigned to Player.")
+		var max_hp = get_max_health()
+		health_bar.init_health(max_hp)
+		health_bar.health = runtime_stats.current_health if runtime_stats else max_hp
+	
+	# Setup StatsUI
+	if stats_ui and base_stats:
+		stats_ui.setup(base_stats)
+		stats_ui.stats_ui_closed.connect(_on_stats_ui_closed)
+		stats_ui.hide()  # Ẩn mặc định, nhấn Tab để mở
+	
+	# Setup touch controls nếu dùng LocalController
+	if controller is LocalController:
+		if touch_controls:
+			controller.joystick_left = joystick_left
+			controller.joystick_right = joystick_right
+			# Connect touch button signals
+			touch_controls.attack_pressed.connect(_on_attack_pressed)
+			touch_controls.dash_pressed.connect(_on_dash_pressed)
+			touch_controls.parry_pressed.connect(_on_parry_pressed)
+			touch_controls.sp_atk_pressed.connect(_on_sp_atk_pressed)
+		else:
+			push_warning("TouchControls not assigned to Player.")
+	
+	# Connect signals để state machine xử lý chuyển state
+	hit_taken.connect(_on_hit_taken)
 
 func _physics_process(delta: float) -> void:
 	if current_action == Action.DEAD:
 		return
-
+	
+	# Update runtime stats (cooldowns)
+	if runtime_stats:
+		runtime_stats.update(delta)
+	
+	# Toggle StatsUI khi nhấn Tab
+	if Input.is_action_just_pressed("ui_focus_next"):  # Tab key
+		_toggle_stats_ui()
+	
+	# Update combo timer (countdown cho combo window timeout)
 	_update_combo_timer(delta)
-	_apply_gravity(delta)
-	_handle_jump_input()
-	_handle_horizontal_input()
-	_handle_action_input()
+	
+	# Delegate tất cả input và physics cho state machine
+	if state_machine and controller:
+		state_machine.handle_input(controller)
+		state_machine.physics_update(delta)
+		
+		# Clear touch flags sau mỗi frame để tránh input buffering
+		if controller is LocalController:
+			controller.clear_touch_flags()
+	
+	# Update sprite orientation (rotation bởi joystick phải)
 	_update_sprite_orientation()
-	_update_animations()
-
+	
+	# Apply physics
 	move_and_slide()
 
-func _handle_horizontal_input() -> void:
-	if current_action == Action.DASH:
-		return
-
-	var direction := Input.get_axis("ui_left", "ui_right")
-	move_vector.x = direction
-
-	if _can_move():
-		if direction != 0.0:
-			velocity.x = direction * speed
-			_last_move_direction = direction
-			dash_direction.x = direction
-		else:
-			velocity.x = move_toward(velocity.x, 0.0, speed)
-	else:
-		velocity.x = move_toward(velocity.x, 0.0, speed * 2.0)
-
-func _handle_jump_input() -> void:
-	if Input.is_action_just_pressed("ui_up") and is_on_floor() and _can_perform_basic_action():
-		velocity.y = jump_velocity
-
-func _handle_action_input() -> void:
-	if Input.is_action_just_pressed("ui_accept"):
-		request_attack()
-	if Input.is_action_just_pressed("ui_cancel"):
-		request_dash()
-
-func _apply_gravity(delta: float) -> void:
-	var air_control_locked := current_action in [Action.AIR_ATTACK, Action.SPECIAL]
-	if not is_on_floor():
-		if not air_control_locked:
-			velocity.y += gravity * delta
-	else:
-		_air_attack_used = false
-		if velocity.y > 0.0:
-			velocity.y = 0.0
+# === SPRITE ORIENTATION ===
 
 func _update_sprite_orientation() -> void:
-	if joystick_right and joystick_right.is_pressed:
-		rotation = joystick_right.output.angle()
-	elif abs(velocity.x) > 0.01 and current_action != Action.DASH:
-		animated_sprite.flip_h = velocity.x < 0.0
+	"""Rotate sprite theo joystick phải (nếu có)"""
+	if controller and controller.is_right_stick_pressed():
+		rotation = controller.get_right_stick().angle()
 
-func _update_animations() -> void:
-	if current_action in [Action.ATTACK, Action.AIR_ATTACK, Action.DASH, Action.PARRY, Action.SPECIAL, Action.HITSTUN]:
-		return
-
-	if not is_on_floor():
-		if velocity.y < 0.0:
-			_play_animation_if_needed(&"j_up")
-		else:
-			_play_animation_if_needed(&"j_down")
-	elif abs(velocity.x) > 0.01:
-		_play_animation_if_needed(&"run")
-	else:
-		_play_animation_if_needed(&"idle")
+# === COMBO TIMER ===
 
 func _update_combo_timer(delta: float) -> void:
+	"""Update combo window timer - tự động reset combo khi hết thời gian"""
 	if _combo_window_timer <= 0.0:
 		return
 
@@ -96,75 +103,10 @@ func _update_combo_timer(delta: float) -> void:
 	if _combo_window_timer <= 0.0:
 		_reset_combo()
 
-func _begin_ground_attack(step: int) -> void:
-	var data: Dictionary = GROUND_COMBO[step]
-	var token := _start_action(Action.ATTACK)
-	_combo_buffered = false
-	_combo_accepting_buffer = false
-	combo_step_started.emit(step)
-
-	var anim_name: StringName = data["anim"] as StringName
-	animated_sprite.play(anim_name)
-
-	var anim_length := _get_animation_length(anim_name)
-	if anim_length > 0.0:
-		var buffer_ratio := float(data.get("buffer_ratio", 0.6))
-		await get_tree().create_timer(anim_length * buffer_ratio).timeout
-	if token != _action_token:
-		return
-
-	_combo_accepting_buffer = true
-	_combo_window_timer = combo_window
-
-	await animated_sprite.animation_finished
-	if token != _action_token:
-		return
-
-	_combo_accepting_buffer = false
-
-	if step < GROUND_COMBO.size() - 1 and _combo_buffered:
-		_combo_buffered = false
-		_end_action(token)
-		call_deferred("request_attack")
-		return
-
-	var end_anim: StringName = data.get("end_anim", &"") as StringName
-	if end_anim != &"":
-		animated_sprite.play(end_anim)
-		await animated_sprite.animation_finished
-		if token != _action_token:
-			return
-
-	if step >= GROUND_COMBO.size() - 1:
-		_reset_combo()
-
-	_end_action(token)
-
-func _begin_air_attack() -> void:
-	_air_attack_used = true
-	var token := _start_action(Action.AIR_ATTACK)
-	_combo_buffered = false
-	_combo_accepting_buffer = false
-	_combo_window_timer = 0.0
-	velocity = Vector2.ZERO
-	animated_sprite.play(AIR_ATTACK["anim"] as StringName)
-	await animated_sprite.animation_finished
-	if token != _action_token:
-		return
-	_reset_combo()
-	_end_action(token)
-
-func _start_dash(direction: float) -> void:
-	var token := _start_action(Action.DASH)
-	dash_performed.emit(direction)
-	velocity.x = direction * dash_speed
-	animated_sprite.play(&"roll")
-	await get_tree().create_timer(dash_duration).timeout
-	if token != _action_token:
-		return
-	_end_action(token)
+# === ANIMATION HELPERS ===
 
 func _get_animation_length(anim_name: StringName) -> float:
+	"""Tính độ dài animation theo frame count và animation speed"""
 	if not animated_sprite or not animated_sprite.sprite_frames:
 		return 0.0
 
@@ -177,23 +119,76 @@ func _get_animation_length(anim_name: StringName) -> float:
 	return frame_count / anim_speed
 
 func _play_animation_if_needed(anim_name: StringName) -> void:
-	if animated_sprite.animation != anim_name:
-		animated_sprite.play(anim_name)
+	"""Deprecated: Dùng play_animation() từ PlayerAPI thay thế"""
+	play_animation(anim_name)
 
-func _can_move() -> bool:
-	return current_action not in [Action.ATTACK, Action.AIR_ATTACK, Action.DASH, Action.PARRY, Action.SPECIAL, Action.HITSTUN, Action.DEAD]
+# === SIGNAL HANDLERS ===
 
-func _can_perform_basic_action() -> bool:
-	return current_action == Action.NONE
+func _on_runtime_health_changed(current: float, max_hp: float) -> void:
+	"""Update UI khi health thay đổi (từ RuntimeStats)"""
+	if health_bar:
+		# Ensure the progress bar max matches runtime max before assigning current value
+		health_bar.max_value = max_hp
+		# If DamageBar child is exposed on the health_bar script, update its max as well
+		if health_bar.has_node("DamageBar"):
+			health_bar.get_node("DamageBar").max_value = max_hp
+		# Now assign current health (the setter will clamp against max_value)
+		health_bar.health = current
+	# Emit health_changed signal để giữ tương thích với code cũ
+	health_changed.emit(current, max_hp)
 
-func _can_cancel_with_dash() -> bool:
-	return current_action == Action.ATTACK and _combo_accepting_buffer
+func _on_death() -> void:
+	"""Xử lý khi hết máu (từ RuntimeStats.health_depleted)"""
+	if state_machine:
+		state_machine.change_state("DeadState")
 
-func _die() -> void:
-	_interrupt_current_action()
-	velocity = Vector2.ZERO
-	_action_token += 1
-	current_action = Action.DEAD
-	died.emit()
-	animated_sprite.play(&"death")
-	await animated_sprite.animation_finished
+func _on_hit_taken(_amount: float) -> void:
+	"""Chuyển sang HitstunState khi bị hit"""
+	# Chỉ vào hitstun nếu không đang ở HITSTUN hoặc DEAD
+	if current_action != Action.DEAD and current_action != Action.HITSTUN and state_machine:
+		_interrupt_current_action()
+		state_machine.change_state("HitstunState")
+
+func _toggle_stats_ui() -> void:
+	"""Toggle hiển thị/ẩn StatsUI khi nhấn Tab"""
+	if stats_ui:
+		if stats_ui.visible:
+			stats_ui.hide()
+			# Enable touch controls khi đóng stats
+			if touch_controls:
+				touch_controls.visible = true
+			print("[Player] Stats UI hidden")
+		else:
+			stats_ui.show()
+			# Disable touch controls khi mở stats
+			if touch_controls:
+				touch_controls.visible = false
+			print("[Player] Stats UI shown")
+
+func _on_stats_ui_closed() -> void:
+	"""Xử lý khi StatsUI đóng bằng Close button"""
+	if touch_controls:
+		touch_controls.visible = true
+	print("[Player] Stats UI closed via button")
+
+# === TOUCH CONTROL CALLBACKS ===
+
+func _on_attack_pressed() -> void:
+	"""Touch button attack - set flag trong LocalController"""
+	if controller and controller is LocalController:
+		controller._attack_pressed = true
+
+func _on_dash_pressed() -> void:
+	"""Touch button dash - set flag trong LocalController"""
+	if controller and controller is LocalController:
+		controller._dash_pressed = true
+
+func _on_parry_pressed() -> void:
+	"""Touch button parry - set flag trong LocalController"""
+	if controller and controller is LocalController:
+		controller._parry_pressed = true
+
+func _on_sp_atk_pressed() -> void:
+	"""Touch button special - set flag trong LocalController"""
+	if controller and controller is LocalController:
+		controller._special_pressed = true

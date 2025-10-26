@@ -4,7 +4,7 @@ func _on_damage_button_pressed() -> void:
 	# damage the player
 	var player = get_node("../Player")
 	if player:
-		player.take_damage(10)
+		player.take_damage(50)
 
 func _on_reset_button_pressed() -> void:
 	# reset scene
