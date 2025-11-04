@@ -1,4 +1,4 @@
-[gd_scene load_steps=144 format=3 uid="uid://dhwbw4xat3ger"]
+[gd_scene load_steps=157 format=3 uid="uid://dhwbw4xat3ger"]
 
 [ext_resource type="Texture2D" uid="uid://bmcwxx2s3mx5p" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/1_atk/1_atk_1.png" id="1_66i60"]
 [ext_resource type="Script" uid="uid://cds0vf3c4bav3" path="res://Player/Scripts/player.gd" id="1_p4dcl"]
@@ -124,18 +124,31 @@
 [ext_resource type="Texture2D" uid="uid://g3ruotslastq" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/sp_atk/sp_atk_22.png" id="136_n7w6h"]
 [ext_resource type="Texture2D" uid="uid://dw70adsbkdnua" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/sp_atk/sp_atk_23.png" id="137_4alk5"]
 [ext_resource type="Script" uid="uid://c4unatnaqhvmt" path="res://Player/health_bar.gd" id="137_f5mc5"]
+[ext_resource type="Script" uid="uid://1e1ur88xqp6f" path="res://Player/Scripts/States/player_state_machine.gd" id="137_qwb36"]
 [ext_resource type="Texture2D" uid="uid://jk64lesli0ep" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/sp_atk/sp_atk_24.png" id="138_ckw4x"]
+[ext_resource type="Script" uid="uid://dj05f1t2sfvpv" path="res://Player/Scripts/States/grounded_state.gd" id="138_cq5v8"]
 [ext_resource type="Texture2D" uid="uid://bok38m152qaay" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/sp_atk/sp_atk_25.png" id="139_7pnwt"]
+[ext_resource type="Script" uid="uid://clx06x46bw1ay" path="res://Player/Scripts/States/air_state.gd" id="139_fm5nm"]
 [ext_resource type="Texture2D" uid="uid://dsrtsiigdcpjx" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/sp_atk/sp_atk_26.png" id="140_83b32"]
+[ext_resource type="Script" uid="uid://c00a7d1j4r6vp" path="res://Player/Scripts/States/attack_state.gd" id="140_c4oyh"]
 [ext_resource type="Texture2D" uid="uid://dj2bpt8mfi05k" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/sp_atk/sp_atk_27.png" id="141_3xwri"]
+[ext_resource type="Script" uid="uid://cqcsm34dov0db" path="res://Player/Scripts/States/air_attack_state.gd" id="141_p4dcl"]
 [ext_resource type="Texture2D" uid="uid://djkngb3m0bkfn" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/sp_atk/sp_atk_28.png" id="142_sqkl7"]
+[ext_resource type="Script" uid="uid://dtvnxyn47ybrk" path="res://Player/Scripts/States/dash_state.gd" id="142_y7oqx"]
 [ext_resource type="Texture2D" uid="uid://4f8mb8u2toce" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/sp_atk/sp_atk_29.png" id="143_fk8ff"]
+[ext_resource type="Script" uid="uid://isxkp41spx2g" path="res://Player/Scripts/States/parry_state.gd" id="143_hd7b1"]
+[ext_resource type="Script" uid="uid://oahddbvw5146" path="res://Player/Scripts/States/special_state.gd" id="144_6rexp"]
 [ext_resource type="Texture2D" uid="uid://b1etglgx2q84x" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/sp_atk/sp_atk_30.png" id="144_og1rl"]
 [ext_resource type="Texture2D" uid="uid://0pbhfpyxrhkc" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_1.png" id="145_em02v"]
+[ext_resource type="Script" uid="uid://cluof7sd6rplt" path="res://Player/Scripts/States/hitstun_state.gd" id="145_q8bse"]
 [ext_resource type="Texture2D" uid="uid://dcsc6dl47f5j7" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_2.png" id="146_hxkte"]
+[ext_resource type="Script" uid="uid://b8essmlafrhut" path="res://Player/Scripts/States/dead_state.gd" id="146_kjopa"]
+[ext_resource type="Script" uid="uid://c6q1mq053stku" path="res://Player/Scripts/Controllers/local_controller.gd" id="147_jl3q8"]
 [ext_resource type="Texture2D" uid="uid://g04c6in0hd6l" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_3.png" id="147_vt77p"]
 [ext_resource type="Texture2D" uid="uid://dm85wl5xmvnq4" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_4.png" id="148_58c4j"]
+[ext_resource type="Script" uid="uid://m53y0vhju4h4" path="res://Player/Scripts/player_runtime_stats.gd" id="148_fm5nm"]
 [ext_resource type="Texture2D" uid="uid://cnht08rfsfr1d" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_5.png" id="149_tpmwr"]
+[ext_resource type="PackedScene" uid="uid://dxv8h7yw3rjtv" path="res://Player/UI/stats_ui.tscn" id="150_c4oyh"]
 [ext_resource type="Texture2D" uid="uid://cgo5hqyqvfirh" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_6.png" id="150_hfq5i"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_edjgo"]
@@ -659,7 +672,47 @@ offset = Vector2(0, -70)
 position_smoothing_enabled = true
 position_smoothing_speed = 3.0
 
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("137_qwb36")
+
+[node name="GroundedState" type="Node" parent="StateMachine"]
+script = ExtResource("138_cq5v8")
+
+[node name="AirState" type="Node" parent="StateMachine"]
+script = ExtResource("139_fm5nm")
+
+[node name="AttackState" type="Node" parent="StateMachine"]
+script = ExtResource("140_c4oyh")
+
+[node name="AirAttackState" type="Node" parent="StateMachine"]
+script = ExtResource("141_p4dcl")
+
+[node name="DashState" type="Node" parent="StateMachine"]
+script = ExtResource("142_y7oqx")
+
+[node name="ParryState" type="Node" parent="StateMachine"]
+script = ExtResource("143_hd7b1")
+
+[node name="SpecialState" type="Node" parent="StateMachine"]
+script = ExtResource("144_6rexp")
+
+[node name="HitstunState" type="Node" parent="StateMachine"]
+script = ExtResource("145_q8bse")
+
+[node name="DeadState" type="Node" parent="StateMachine"]
+script = ExtResource("146_kjopa")
+
+[node name="Controller" type="Node" parent="."]
+script = ExtResource("147_jl3q8")
+
+[node name="RuntimeStats" type="Node" parent="."]
+script = ExtResource("148_fm5nm")
+parry_cooldown = 0.5
+
 [node name="UI" type="CanvasLayer" parent="."]
+
+[node name="StatsUI" parent="UI" instance=ExtResource("150_c4oyh")]
+visible = false
 
 [node name="HealthBar" type="ProgressBar" parent="UI"]
 z_index = 1

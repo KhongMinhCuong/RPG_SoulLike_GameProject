@@ -1,0 +1,204 @@
+[gd_scene load_steps=2 format=3 uid="uid://dxv8h7yw3rjtv"]
+
+[ext_resource type="Script" path="res://Player/UI/stats_ui.gd" id="1_stats_ui"]
+
+[node name="StatsUI" type="CanvasLayer"]
+layer = 200
+process_mode = 3
+script = ExtResource("1_stats_ui")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+anchors_preset = 8
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -130.0
+offset_right = 230.0
+offset_bottom = 130.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "CHARACTER STATS"
+horizontal_alignment = 1
+
+[node name="LevelPanel" type="PanelContainer" parent="VBox"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="VBox/LevelPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="LevelLabel" type="Label" parent="VBox/LevelPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Level: 1"
+horizontal_alignment = 1
+
+[node name="ExpBar" type="ProgressBar" parent="VBox/LevelPanel/VBox"]
+custom_minimum_size = Vector2(420, 12)
+layout_mode = 2
+max_value = 100.0
+show_percentage = false
+
+[node name="ExpLabel" type="Label" parent="VBox/LevelPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "0 / 100 EXP"
+horizontal_alignment = 1
+
+[node name="MainContent" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="StatsPanel" type="PanelContainer" parent="VBox/MainContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBox/MainContent/StatsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PointsLabel" type="Label" parent="VBox/MainContent/StatsPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Points: 0"
+horizontal_alignment = 1
+
+[node name="Stats" type="VBoxContainer" parent="VBox/MainContent/StatsPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="StrRow" type="HBoxContainer" parent="VBox/MainContent/StatsPanel/VBox/Stats"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="VBox/MainContent/StatsPanel/VBox/Stats/StrRow"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "STR:"
+
+[node name="ValueLabel" type="Label" parent="VBox/MainContent/StatsPanel/VBox/Stats/StrRow"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "10"
+horizontal_alignment = 1
+
+[node name="PlusButton" type="Button" parent="VBox/MainContent/StatsPanel/VBox/Stats/StrRow"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "+"
+
+[node name="VitRow" type="HBoxContainer" parent="VBox/MainContent/StatsPanel/VBox/Stats"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="VBox/MainContent/StatsPanel/VBox/Stats/VitRow"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "VIT:"
+
+[node name="ValueLabel" type="Label" parent="VBox/MainContent/StatsPanel/VBox/Stats/VitRow"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "10"
+horizontal_alignment = 1
+
+[node name="PlusButton" type="Button" parent="VBox/MainContent/StatsPanel/VBox/Stats/VitRow"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "+"
+
+[node name="AgiRow" type="HBoxContainer" parent="VBox/MainContent/StatsPanel/VBox/Stats"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="VBox/MainContent/StatsPanel/VBox/Stats/AgiRow"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "AGI:"
+
+[node name="ValueLabel" type="Label" parent="VBox/MainContent/StatsPanel/VBox/Stats/AgiRow"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "10"
+horizontal_alignment = 1
+
+[node name="PlusButton" type="Button" parent="VBox/MainContent/StatsPanel/VBox/Stats/AgiRow"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "+"
+
+[node name="LckRow" type="HBoxContainer" parent="VBox/MainContent/StatsPanel/VBox/Stats"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="VBox/MainContent/StatsPanel/VBox/Stats/LckRow"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "LCK:"
+
+[node name="ValueLabel" type="Label" parent="VBox/MainContent/StatsPanel/VBox/Stats/LckRow"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "10"
+horizontal_alignment = 1
+
+[node name="PlusButton" type="Button" parent="VBox/MainContent/StatsPanel/VBox/Stats/LckRow"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "+"
+
+[node name="CalculatedPanel" type="PanelContainer" parent="VBox/MainContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBox/MainContent/CalculatedPanel"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="VBox/MainContent/CalculatedPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Stats"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="VBox/MainContent/CalculatedPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 9
+text = "HP: 100
+DMG: 10
+DEF: 5
+SPD: 200
+ATK%: 100%
+CRIT: 5%
+DROP: +0%"
+
+[node name="CloseButton" type="Button" parent="VBox"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Close (Tab)"
