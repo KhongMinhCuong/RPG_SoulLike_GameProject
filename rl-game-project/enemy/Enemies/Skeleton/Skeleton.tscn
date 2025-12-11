@@ -1,19 +1,19 @@
 [gd_scene load_steps=46 format=3 uid="uid://biqai14au81bh"]
 
-[ext_resource type="Texture2D" uid="uid://bs2pasxx5bftp" path="res://assets/Monsters_Creatures_Fantasy/Skeleton/Attack.png" id="1_2btid"]
-[ext_resource type="Script" uid="uid://85aiaqtei6el" path="res://scripts/states/enemy_base.gd" id="1_ygee8"]
-[ext_resource type="Texture2D" uid="uid://ba7m6musttc8u" path="res://assets/Monsters_Creatures_Fantasy/Skeleton/Idle.png" id="2_dpndv"]
-[ext_resource type="Texture2D" uid="uid://dxk138t18ukbi" path="res://assets/Monsters_Creatures_Fantasy/Skeleton/Walk.png" id="3_ygee8"]
-[ext_resource type="Texture2D" uid="uid://8fcp0ni20n87" path="res://assets/Monsters_Creatures_Fantasy/Skeleton/Death.png" id="4_g22im"]
-[ext_resource type="Texture2D" uid="uid://dmchxhjbkfh6q" path="res://assets/Monsters_Creatures_Fantasy/Skeleton/Take Hit.png" id="5_qqoon"]
-[ext_resource type="Script" uid="uid://b7asdts4ly6ff" path="res://Enemies/Skeleton/state_machine.gd" id="6_g22im"]
-[ext_resource type="Texture2D" uid="uid://q8dpe2fv4607" path="res://assets/Monsters_Creatures_Fantasy/Skeleton/Shield.png" id="7_pxdd2"]
-[ext_resource type="Script" uid="uid://dshv77k0nnh0g" path="res://scripts/states/enemy_patrol.gd" id="7_v7rdr"]
-[ext_resource type="PackedScene" uid="uid://c5oyf3hdtpewy" path="res://scenes/health.tscn" id="8_and3r"]
-[ext_resource type="Script" uid="uid://bustyt866bace" path="res://scripts/states/enemy_chase.gd" id="9_ivhqf"]
-[ext_resource type="Script" uid="uid://cnaeer6xvfh5i" path="res://scripts/states/enemy_attack.gd" id="10_vb502"]
-[ext_resource type="Script" uid="uid://prsrjd5xwfrm" path="res://scripts/hadle_damage/hitbox.gd" id="13_pxdd2"]
-[ext_resource type="Script" uid="uid://dmruf56l76xem" path="res://scripts/hadle_damage/hurtbox.gd" id="13_xxlxq"]
+[ext_resource type="Texture2D" uid="uid://bs2pasxx5bftp" path="res://enemy/assets/Skeleton/Attack.png" id="1_2btid"]
+[ext_resource type="Script" uid="uid://85aiaqtei6el" path="res://enemy/scripts/states/enemy_base.gd" id="1_ygee8"]
+[ext_resource type="Texture2D" uid="uid://ba7m6musttc8u" path="res://enemy/assets/Skeleton/Idle.png" id="2_dpndv"]
+[ext_resource type="Texture2D" uid="uid://dxk138t18ukbi" path="res://enemy/assets/Skeleton/Walk.png" id="3_ygee8"]
+[ext_resource type="Texture2D" uid="uid://8fcp0ni20n87" path="res://enemy/assets/Skeleton/Death.png" id="4_g22im"]
+[ext_resource type="Texture2D" uid="uid://dmchxhjbkfh6q" path="res://enemy/assets/Skeleton/Take Hit.png" id="5_qqoon"]
+[ext_resource type="Script" uid="uid://b7asdts4ly6ff" path="res://enemy/Enemies/Skeleton/state_machine.gd" id="6_g22im"]
+[ext_resource type="Texture2D" uid="uid://q8dpe2fv4607" path="res://enemy/assets/Skeleton/Shield.png" id="7_pxdd2"]
+[ext_resource type="Script" uid="uid://dshv77k0nnh0g" path="res://enemy/scripts/states/enemy_patrol.gd" id="7_v7rdr"]
+[ext_resource type="PackedScene" uid="uid://c5oyf3hdtpewy" path="res://enemy/scenes/health.tscn" id="8_and3r"]
+[ext_resource type="Script" uid="uid://bustyt866bace" path="res://enemy/scripts/states/enemy_chase.gd" id="9_ivhqf"]
+[ext_resource type="Script" uid="uid://cnaeer6xvfh5i" path="res://enemy/scripts/states/enemy_attack.gd" id="10_vb502"]
+[ext_resource type="Script" uid="uid://prsrjd5xwfrm" path="res://enemy/scripts/hadle_damage/hitbox.gd" id="13_pxdd2"]
+[ext_resource type="Script" uid="uid://dmruf56l76xem" path="res://enemy/scripts/hadle_damage/hurtbox.gd" id="13_xxlxq"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_g22im"]
 radius = 13.0
@@ -253,6 +253,7 @@ radius = 21.998642
 height = 51.99728
 
 [node name="Skeleton" type="CharacterBody2D"]
+collision_layer = 2
 script = ExtResource("1_ygee8")
 chase_range = 200.0
 
@@ -268,9 +269,9 @@ shape = SubResource("CapsuleShape2D_g22im")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_cawwt")
-animation = &"attack"
+animation = &"shield"
 autoplay = "idle"
-frame = 7
+frame = 3
 frame_progress = 1.0
 
 [node name="PatrolPoint" type="Node2D" parent="."]

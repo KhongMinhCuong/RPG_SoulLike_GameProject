@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://mbhrpk3lydy4"
-path="res://.godot/imported/Attack2.png-41afe3e63cdc4681e5eeaf0f1d2f6ee9.ctex"
+path="res://.godot/imported/Attack2.png-2c2016b4763c3514a8c3a35541f8b9ae.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Monsters_Creatures_Fantasy/Skeleton/Attack2.png"
-dest_files=["res://.godot/imported/Attack2.png-41afe3e63cdc4681e5eeaf0f1d2f6ee9.ctex"]
+source_file="res://enemy/assets/Skeleton/Attack2.png"
+dest_files=["res://.godot/imported/Attack2.png-2c2016b4763c3514a8c3a35541f8b9ae.ctex"]
 
 [params]
 

@@ -21,6 +21,10 @@ func enter(_previous_state: PlayerState) -> void:
 	# Play animation
 	player.play_animation(player.AIR_ATTACK["anim"] as StringName, true)
 	
+	# Enable air attack hitbox (shape 3)
+	if player.hitbox:
+		player.hitbox.enable_shape(3)
+	
 	await player.animated_sprite.animation_finished
 	
 	if attack_token != player._action_token:
@@ -28,6 +32,10 @@ func enter(_previous_state: PlayerState) -> void:
 	
 	player._reset_combo()
 	player._end_action(attack_token)
+	
+	# Disable hitbox
+	if player.hitbox:
+		player.hitbox.disable()
 	
 	# Return về state phù hợp
 	if player.is_on_floor():

@@ -13,7 +13,16 @@ func enter(_previous_state: PlayerState) -> void:
 	# Freeze hoàn toàn
 	player.velocity = Vector2.ZERO
 	
+	# Disable hurtbox if invincible during special attack
+	if player.invincible_during_special and player.hurtbox:
+		player.hurtbox.monitoring = false
+		player.hurtbox.monitorable = false
+	
 	player.play_animation(&"sp_atk", true)
+	
+	# Enable special attack hitbox (shape 4)
+	if player.hitbox:
+		player.hitbox.enable_shape(4)
 	
 	await player.animated_sprite.animation_finished
 	
@@ -21,6 +30,15 @@ func enter(_previous_state: PlayerState) -> void:
 		return  # Bị interrupt
 	
 	player._end_action(special_token)
+	
+	# Disable hitbox
+	if player.hitbox:
+		player.hitbox.disable()
+	
+	# Re-enable hurtbox if it was disabled
+	if player.invincible_during_special and player.hurtbox:
+		player.hurtbox.monitoring = true
+		player.hurtbox.monitorable = true
 	
 	# Return về state phù hợp
 	if player.is_on_floor():

@@ -27,6 +27,9 @@ signal hit_taken(amount: float)
 @export var dash_duration: float = 0.2
 @export var combo_window: float = 0.45  # Thời gian buffer combo
 
+## Special attack properties
+@export var invincible_during_special: bool = false  # Nhân vật bất tử khi dùng sp_atk
+
 # Touch controls
 @export var joystick_left: VirtualJoystick
 @export var joystick_right: VirtualJoystick
@@ -35,6 +38,8 @@ signal hit_taken(amount: float)
 @onready var animated_sprite: AnimatedSprite2D = $Sprite2D
 @onready var health_bar = $UI/HealthBar
 @onready var runtime_stats: PlayerRuntimeStats = $RuntimeStats
+@onready var hitbox: Area2D = $Hitbox
+@onready var hurtbox: Area2D = $Hurtbox
 
 # === ENUMS ===
 enum Action { NONE, ATTACK, AIR_ATTACK, DASH, PARRY, SPECIAL, HITSTUN, DEAD }
@@ -64,6 +69,11 @@ const AIR_ATTACK: Dictionary = {"anim": &"air_atk"}
 var move_vector := Vector2.ZERO  # Deprecated - không dùng nữa
 var current_action: int = Action.NONE  # Action hiện tại
 var dash_direction := Vector2.ZERO  # Hướng dash gần nhất
+
+# Computed property for hitbox damage
+var damage: float:
+	get:
+		return base_stats.base_damage if base_stats else 10.0
 
 # === PRIVATE VARIABLES ===
 # Token system để invalidate async paths

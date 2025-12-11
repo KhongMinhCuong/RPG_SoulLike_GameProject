@@ -33,6 +33,14 @@ func enable():
 		if shape is CollisionShape2D:
 			shape.disabled = false
 
+func enable_shape(shape_index: int):
+	"""Enable only specific CollisionShape2D by index"""
+	monitoring = true
+	monitorable = true
+	var shapes = get_children().filter(func(c): return c is CollisionShape2D)
+	for i in shapes.size():
+		shapes[i].disabled = (i != shape_index)
+
 func disable():
 	monitoring = false
 	monitorable = false

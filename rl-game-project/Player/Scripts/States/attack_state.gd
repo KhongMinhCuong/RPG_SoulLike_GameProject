@@ -39,6 +39,10 @@ func _execute_attack() -> void:
 	var anim_name: StringName = data["anim"] as StringName
 	player.play_animation(anim_name, true)  # Force play để reset animation từ đầu
 	
+	# Enable specific hitbox shape based on combo step
+	if player.hitbox:
+		player.hitbox.enable_shape(step)
+	
 	# Wait đến buffer_ratio% của animation
 	var anim_length: float = player._get_animation_length(anim_name)
 	if anim_length > 0.0:
@@ -94,6 +98,10 @@ func _execute_attack() -> void:
 		player._reset_combo()
 	
 	player._end_action(attack_token)
+	
+	# Disable hitbox
+	if player.hitbox:
+		player.hitbox.disable()
 	
 	# Return về state phù hợp
 	if player.is_on_floor():

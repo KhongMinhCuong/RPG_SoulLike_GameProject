@@ -1,4 +1,4 @@
-[gd_scene load_steps=157 format=3 uid="uid://dhwbw4xat3ger"]
+[gd_scene load_steps=165 format=3 uid="uid://dhwbw4xat3ger"]
 
 [ext_resource type="Texture2D" uid="uid://bmcwxx2s3mx5p" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/1_atk/1_atk_1.png" id="1_66i60"]
 [ext_resource type="Script" uid="uid://cds0vf3c4bav3" path="res://Player/Scripts/player.gd" id="1_p4dcl"]
@@ -150,6 +150,8 @@
 [ext_resource type="Texture2D" uid="uid://cnht08rfsfr1d" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_5.png" id="149_tpmwr"]
 [ext_resource type="PackedScene" uid="uid://dxv8h7yw3rjtv" path="res://Player/UI/stats_ui.tscn" id="150_c4oyh"]
 [ext_resource type="Texture2D" uid="uid://cgo5hqyqvfirh" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_6.png" id="150_hfq5i"]
+[ext_resource type="Script" uid="uid://dmruf56l76xem" path="res://enemy/scripts/hadle_damage/hurtbox.gd" id="151_y7oqx"]
+[ext_resource type="Script" uid="uid://prsrjd5xwfrm" path="res://enemy/scripts/hadle_damage/hitbox.gd" id="152_hd7b1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_edjgo"]
 size = Vector2(16, 35)
@@ -294,13 +296,13 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("55_517ue")
+}, {
+"duration": 1.0,
 "texture": ExtResource("53_ib1vr")
 }, {
 "duration": 1.0,
 "texture": ExtResource("54_w7j8g")
-}, {
-"duration": 1.0,
-"texture": ExtResource("55_517ue")
 }, {
 "duration": 1.0,
 "texture": ExtResource("56_uq8wy")
@@ -654,8 +656,28 @@ shadow_offset = Vector2(0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qwb36"]
 bg_color = Color(0.4745098, 0, 0, 1)
 
-[node name="Player" type="CharacterBody2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6rexp"]
+size = Vector2(16, 35)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q8bse"]
+size = Vector2(30, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kjopa"]
+size = Vector2(42, 37)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jl3q8"]
+size = Vector2(99, 45)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y7oqx"]
+size = Vector2(37, 58)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hd7b1"]
+size = Vector2(139, 64)
+
+[node name="Player" type="CharacterBody2D" groups=["Player"]]
+collision_layer = 4
 script = ExtResource("1_p4dcl")
+invincible_during_special = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -17.5)
@@ -664,7 +686,9 @@ shape = SubResource("RectangleShape2D_edjgo")
 [node name="Sprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_xl8ig")
-animation = &"idle"
+animation = &"sp_atk"
+frame = 29
+frame_progress = 1.0
 offset = Vector2(0, -63)
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -741,5 +765,37 @@ show_percentage = false
 [node name="Timer" type="Timer" parent="UI/HealthBar"]
 wait_time = 0.4
 one_shot = true
+
+[node name="Hurtbox" type="Area2D" parent="."]
+script = ExtResource("151_y7oqx")
+metadata/_custom_type_script = "uid://dmruf56l76xem"
+
+[node name="HurtShape" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -17.5)
+shape = SubResource("RectangleShape2D_6rexp")
+
+[node name="Hitbox" type="Area2D" parent="."]
+script = ExtResource("152_hd7b1")
+metadata/_custom_type_script = "uid://prsrjd5xwfrm"
+
+[node name="Hitbox1" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(24, -25)
+shape = SubResource("RectangleShape2D_q8bse")
+
+[node name="Hitbox2" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(31, -26.5)
+shape = SubResource("RectangleShape2D_kjopa")
+
+[node name="Hitbox3" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(59.5, -25.5)
+shape = SubResource("RectangleShape2D_jl3q8")
+
+[node name="Hitbox4" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(33.5, -32)
+shape = SubResource("RectangleShape2D_y7oqx")
+
+[node name="Hitbox5" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0.5, -32)
+shape = SubResource("RectangleShape2D_hd7b1")
 
 [connection signal="timeout" from="UI/HealthBar/Timer" to="UI/HealthBar" method="_on_timer_timeout"]

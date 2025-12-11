@@ -7,6 +7,7 @@ class_name Player
 @onready var state_machine: PlayerStateMachine = $StateMachine
 @onready var controller: PlayerController = $Controller
 @onready var stats_ui: CanvasLayer = $UI/StatsUI  # Stats UI để hiển thị level/stats
+@export var direction: int
 
 func _ready() -> void:
 	# === INITIALIZE STATS SYSTEM ===
@@ -59,6 +60,17 @@ func _physics_process(delta: float) -> void:
 	if current_action == Action.DEAD:
 		return
 	
+	# Update direction only when moving, preserve last direction when idle
+	var move_dir = sign(controller.get_move_direction().x) if controller else 0
+	if move_dir != 0:
+		direction = move_dir
+	elif direction == 0:  # Initialize first time
+		direction = 1
+	
+	# Flip sprite according to direction
+	if animated_sprite:
+		animated_sprite.flip_h = (direction < 0)
+
 	# Update runtime stats (cooldowns)
 	if runtime_stats:
 		runtime_stats.update(delta)
