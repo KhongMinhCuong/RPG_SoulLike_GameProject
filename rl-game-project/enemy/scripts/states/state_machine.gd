@@ -1,4 +1,5 @@
 extends Node
+class_name StateMachine
 
 @export var initial_state : State
 
@@ -29,7 +30,6 @@ func _physics_process(delta):
 func on_child_transition(state, new_state_name):
 	if state != current_state:
 		return
-	
 	var new_state = states.get(new_state_name.to_lower())
 	if !new_state:
 		return
@@ -38,5 +38,4 @@ func on_child_transition(state, new_state_name):
 		current_state.exit()
 	
 	new_state.enter()
-	
 	current_state = new_state

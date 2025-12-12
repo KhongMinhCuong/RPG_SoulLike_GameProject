@@ -27,10 +27,7 @@ func update(delta):
 	var distance = abs(player.global_position.x - monster.global_position.x)
 
 	if distance > monster.detection_range:
-		if monster.has_node("PatrolPoints"):
-			emit_signal("transition", self, "EnemyPatrol")
-		else:
-			emit_signal("transition", self, "EnemyIdle")
+		emit_signal("transition", self, "EnemyIdle")
 		return
 
 	if distance <= monster.stop_distance:
@@ -44,17 +41,12 @@ func physic_update(delta: float) -> void:
 	var distance = abs(player.global_position.x - monster.global_position.x)
 
 	if distance > monster.detection_range:
-		emit_signal("transition", self, "EnemyPatrol")
+		emit_signal("transition", self, "EnemyIdle")
 		return
 
 	var direction = sign(player.global_position.x - monster.global_position.x)
 	monster.velocity.x = direction * monster.chase_speed
 	monster.direction = direction
-	
-	if not monster.is_on_floor():
-		monster.velocity.y += monster.gravity * delta
-	else:
-		monster.velocity.y = 0
 
 	animated_sprite.flip_h = direction < 0
 	monster.move_and_slide()

@@ -3,8 +3,9 @@ extends CanvasLayer
 func _on_damage_button_pressed() -> void:
 	# damage the player
 	var player = get_node("../Player")
-	if player:
-		player.take_damage(50)
+	var monster = get_node("../Skeleton")
+	if monster:
+		monster.take_damage(20, true)
 
 func _on_reset_button_pressed() -> void:
 	# reset scene

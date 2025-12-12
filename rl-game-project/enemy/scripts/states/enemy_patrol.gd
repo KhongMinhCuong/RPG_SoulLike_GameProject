@@ -59,12 +59,6 @@ func physic_update(delta: float) -> void:
 	if not monster:
 		return
 
-	# Gravity
-	if not monster.is_on_floor():
-		monster.velocity.y += monster.gravity * delta
-	else:
-		monster.velocity.y = 0
-
 	if points.is_empty():
 		monster.move_and_slide()
 		return
@@ -93,7 +87,6 @@ func physic_update(delta: float) -> void:
 		wait_timer = randf_range(monster.wait_time_range.x, monster.wait_time_range.y)
 		monster.velocity.x = 0
 
-	animated_sprite.flip_h = direction < 0
 	monster.move_and_slide()
 
 func _update_direction_to_target() -> void:
@@ -103,6 +96,8 @@ func _update_direction_to_target() -> void:
 	
 	if direction == 0:
 		direction = 1
+	
+	animated_sprite.flip_h = direction < 0
 
 func _move_to_next_point() -> void:
 	current_target_index = (current_target_index + 1) % points.size()
