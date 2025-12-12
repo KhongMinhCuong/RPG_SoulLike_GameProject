@@ -146,7 +146,7 @@
 [ext_resource type="Script" uid="uid://c6q1mq053stku" path="res://Player/Scripts/Controllers/local_controller.gd" id="147_jl3q8"]
 [ext_resource type="Texture2D" uid="uid://g04c6in0hd6l" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_3.png" id="147_vt77p"]
 [ext_resource type="Texture2D" uid="uid://dm85wl5xmvnq4" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_4.png" id="148_58c4j"]
-[ext_resource type="Script" uid="uid://m53y0vhju4h4" path="res://Player/Scripts/player_runtime_stats.gd" id="148_fm5nm"]
+[ext_resource type="Script" path="res://Player/Scripts/player_runtime_stats.gd" id="148_fm5nm"]
 [ext_resource type="Texture2D" uid="uid://cnht08rfsfr1d" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_5.png" id="149_tpmwr"]
 [ext_resource type="PackedScene" uid="uid://dxv8h7yw3rjtv" path="res://Player/UI/stats_ui.tscn" id="150_c4oyh"]
 [ext_resource type="Texture2D" uid="uid://cgo5hqyqvfirh" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_6.png" id="150_hfq5i"]
@@ -654,7 +654,7 @@ shadow_offset = Vector2(0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qwb36"]
 bg_color = Color(0.4745098, 0, 0, 1)
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" groups=["Player"]]
 script = ExtResource("1_p4dcl")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -664,7 +664,7 @@ shape = SubResource("RectangleShape2D_edjgo")
 [node name="Sprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_xl8ig")
-animation = &"idle"
+animation = &"1_atk"
 offset = Vector2(0, -63)
 
 [node name="Camera2D" type="Camera2D" parent="."]

@@ -1,6 +1,9 @@
 extends CharacterBody2D
 class_name EnemyBase
 
+@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+
 @export var damage: float = 10
 @export var detection_range: float = 250.0
 @export var stop_distance: float = 30
@@ -12,6 +15,9 @@ class_name EnemyBase
 @export var chase_speed: float = 40 
 @export var gravity: float = 900.0
 @export var chase_range: float = 250.0
+
+var stun_duration := 0
+var is_parry_stun := false
 
 var direction: int
 var health: float
@@ -29,8 +35,21 @@ func _ready():
 
 
 func _physics_process(delta):
+	# gravity
+	if not is_on_floor():
+		velocity.y += gravity * delta
+	else:
+		velocity.y = 0
+
 	move_and_slide();
+
+# khi bị tấn công thường thì is_parry là false
+# bị parry thì gọi với is_parry là true
+func take_damage(damage, is_parry := false):
+	health -= damage
+	is_parry_stun = is_parry
+	print("Enemy hit! HP:", health)
 	
-func take_damage(damage):
-	print("Quái trúng đòn! Máu còn lại ",health)
-	health -=damage
+	# overide mọi state
+	var sm = get_node("StateMachine")
+	sm.on_child_transition(sm.current_state, "EnemyHurtstun")

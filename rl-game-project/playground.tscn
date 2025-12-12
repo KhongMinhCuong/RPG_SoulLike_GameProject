@@ -1,23 +1,23 @@
-[gd_scene load_steps=10 format=3 uid="uid://bthjn5kha44lj"]
+[gd_scene load_steps=11 format=3 uid="uid://bthjn5kha44lj"]
 
 [ext_resource type="PackedScene" uid="uid://dhwbw4xat3ger" path="res://Player/player.tscn" id="1_wt17y"]
 [ext_resource type="Script" uid="uid://8q28u2xype6y" path="res://playground_ui.gd" id="3_4bqqs"]
 [ext_resource type="Texture2D" uid="uid://j36uk8c6o4b1" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice46.png" id="4_ynsuh"]
 [ext_resource type="Texture2D" uid="uid://s1u2iv0v0dr5" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice29.png" id="5_v7dth"]
 [ext_resource type="Texture2D" uid="uid://chrf23cgwx70c" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice36.png" id="6_pi42a"]
+[ext_resource type="PackedScene" uid="uid://biqai14au81bh" path="res://enemy/Enemies/Skeleton/Skeleton.tscn" id="7_ynsuh"]
 [ext_resource type="PackedScene" uid="uid://dn81rpmtx4ouf" path="res://touch_controls.tscn" id="151_e5p2i"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wt17y"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_m8u5f"]
-size = Vector2(539, 20)
+size = Vector2(1341, 20)
 
 [sub_resource type="CurveXYZTexture" id="CurveXYZTexture_wt17y"]
 
 [node name="Playground" type="Node2D"]
 
-[node name="Player" parent="." node_paths=PackedStringArray("touch_controls") instance=ExtResource("1_wt17y")]
-touch_controls = NodePath("../Control/TouchControls")
+[node name="Player" parent="." instance=ExtResource("1_wt17y")]
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -36,13 +36,13 @@ position = Vector2(240, 270)
 physics_material_override = SubResource("PhysicsMaterial_wt17y")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(-24.5, 0)
+position = Vector2(-0.5, 0)
 shape = SubResource("RectangleShape2D_m8u5f")
 
 [node name="Sprite2D" type="Sprite2D" parent="StaticBody2D"]
 modulate = Color(0.24136353, 0.14240974, 0.85045916, 1)
-position = Vector2(-24.499956, -1.9073486e-06)
-scale = Vector2(2.105469, 20.000004)
+position = Vector2(-1.499939, -1.9073486e-06)
+scale = Vector2(5.2617188, 20.000004)
 texture = SubResource("CurveXYZTexture_wt17y")
 
 [node name="PlaygroundUI" type="CanvasLayer" parent="."]
@@ -59,6 +59,9 @@ position = Vector2(435, 5)
 scale = Vector2(0.15, 0.15)
 texture_normal = ExtResource("6_pi42a")
 texture_pressed = ExtResource("5_v7dth")
+
+[node name="Skeleton" parent="." instance=ExtResource("7_ynsuh")]
+position = Vector2(309, 205)
 
 [connection signal="pressed" from="PlaygroundUI/DamageButton" to="PlaygroundUI" method="_on_damage_button_pressed"]
 [connection signal="pressed" from="PlaygroundUI/ResetButton" to="PlaygroundUI" method="_on_reset_button_pressed"]

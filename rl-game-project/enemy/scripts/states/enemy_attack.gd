@@ -1,6 +1,7 @@
 extends State
 class_name EnemyAttack
 
+@onready var animation_player: AnimationPlayer = $"../../AnimationPlayer"
 @onready var animated_sprite: AnimatedSprite2D = $"../../AnimatedSprite2D"
 @onready var hitbox: Hitbox = $"../../Hitbox"
 
@@ -52,11 +53,11 @@ func _perform_attack() -> void:
 	attack_timer = monster.attack_cooldown
 	
 	hitbox.enable()
-	animated_sprite.play("attack")
-
+	animation_player.play("attack")
+	
 	animated_sprite.flip_h = player.global_position.x < monster.global_position.x
 
-	await animated_sprite.animation_finished
+	await animation_player.animation_finished
 	hitbox.disable()
 	attacking = false
 	animated_sprite.play("idle")
