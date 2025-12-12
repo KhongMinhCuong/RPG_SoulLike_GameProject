@@ -62,7 +62,7 @@ texture_normal = ExtResource("6_pi42a")
 texture_pressed = ExtResource("5_v7dth")
 
 [node name="Skeleton" parent="." instance=ExtResource("7_ynsuh")]
-position = Vector2(134, 6)
+position = Vector2(313, 136)
 
 [connection signal="pressed" from="PlaygroundUI/DamageButton" to="PlaygroundUI" method="_on_damage_button_pressed"]
 [connection signal="pressed" from="PlaygroundUI/ResetButton" to="PlaygroundUI" method="_on_reset_button_pressed"]

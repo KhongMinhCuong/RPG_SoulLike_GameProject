@@ -15,6 +15,7 @@ class_name EnemyBase
 @export var chase_speed: float = 40 
 @export var gravity: float = 900.0
 @export var chase_range: float = 250.0
+@export var is_attacking: bool = false
 
 var stun_duration := 0
 var is_parry_stun := false
@@ -53,3 +54,9 @@ func take_damage(damage, is_parry := false):
 	# overide mọi state
 	var sm = get_node("StateMachine")
 	sm.on_child_transition(sm.current_state, "EnemyHurtstun")
+	
+	if health <= 0:
+		die()
+
+func die():
+	queue_free()

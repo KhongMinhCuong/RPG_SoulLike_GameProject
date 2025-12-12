@@ -8,7 +8,6 @@ class_name EnemyAttack
 var monster: CharacterBody2D
 var player: Node2D
 var attack_timer: float = 0.0
-var attacking: bool = false
 
 func enter() -> void:
 	print("ATTACK")
@@ -19,13 +18,13 @@ func enter() -> void:
 	
 	player = monster.player
 	attack_timer = 0.0
-	attacking = false
+	monster.is_attacking = false
 	animated_sprite.play("idle")
 
 func exit() -> void:
 	animated_sprite.play("idle")
 	monster.velocity.x = 0
-	attacking = false
+	monster.is_attacking = false
 
 func update(delta: float) -> void:
 	if not monster or not player:
@@ -43,13 +42,14 @@ func update(delta: float) -> void:
 		attack_timer -= delta
 		return
 
-	if not attacking:
+	if not monster.is_attacking:
 		_perform_attack()
 
 func _perform_attack() -> void:
-	if attacking:
+	if monster.is_attacking:
 		return
-	attacking = true
+	
+	monster.is_attacking = true
 	attack_timer = monster.attack_cooldown
 	
 	hitbox.enable()
@@ -59,5 +59,5 @@ func _perform_attack() -> void:
 
 	await animation_player.animation_finished
 	hitbox.disable()
-	attacking = false
+	monster.is_attacking = false
 	animated_sprite.play("idle")
