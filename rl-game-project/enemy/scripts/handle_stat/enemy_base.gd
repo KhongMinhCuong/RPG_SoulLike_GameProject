@@ -34,6 +34,10 @@ func _enter_tree():
 func _ready():
 	health = max_health
 
+func _process(delta: float):
+	if health <= 0:
+		var sm = get_node("StateMachine")
+		sm.on_child_transition(sm.current_state, "EnemyDeath")
 
 func _physics_process(delta):
 	# gravity
@@ -54,9 +58,6 @@ func take_damage(damage, is_parry := false):
 	# overide mọi state
 	var sm = get_node("StateMachine")
 	sm.on_child_transition(sm.current_state, "EnemyHurtstun")
-	
-	if health <= 0:
-		die()
 
-func die():
-	queue_free()
+func get_attack_damage() -> float:
+	return damage

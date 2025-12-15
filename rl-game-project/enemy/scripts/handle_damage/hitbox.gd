@@ -3,10 +3,10 @@ class_name Hitbox
 
 var direction: int
 var damage: float = 0.0
-var owner_node: CharacterBody2D = null
+var owner_node: Node = null
 
 func _ready() -> void:
-	owner_node = get_parent() as CharacterBody2D
+	owner_node = get_parent()
 
 	if owner_node and "damage" in owner_node:
 			damage = owner_node.damage

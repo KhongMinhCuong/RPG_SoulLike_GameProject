@@ -3,9 +3,10 @@ class_name EnemyHurtStun
 
 @onready var enemy: EnemyBase = owner
 
+@export var normal_stun := 0.8
+@export var parry_extra_stun := 1.5  # thời gian cộng thêm khi bị parry
+
 var stun_time := 0.0
-var normal_stun := 0.8
-var parry_extra_stun := 1.5  # thời gian cộng thêm khi bị parry
 
 func enter():
 	enemy.velocity.x = 0

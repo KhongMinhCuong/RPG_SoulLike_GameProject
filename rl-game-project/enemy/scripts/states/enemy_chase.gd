@@ -30,7 +30,7 @@ func update(delta):
 		emit_signal("transition", self, "EnemyIdle")
 		return
 
-	if distance <= monster.stop_distance:
+	if distance <= monster.attack_range:
 		emit_signal("transition", self, "EnemyAttack")
 		return
 
