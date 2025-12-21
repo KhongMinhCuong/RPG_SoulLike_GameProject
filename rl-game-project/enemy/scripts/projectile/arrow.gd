@@ -2,9 +2,13 @@ extends AnimatedSprite2D
 
 var speed: int = 300
 var direction: int
-@onready var hitbox: Hitbox = $Area2D
+@onready var hitbox: Hitbox = $Hitbox
 
 func _ready() -> void:
+	if direction < 0:
+		flip_h = true
+	else:
+		flip_h = false
 	hitbox.enable()
 
 func _physics_process(delta: float) -> void:
