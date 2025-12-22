@@ -1,4 +1,4 @@
-[gd_scene load_steps=172 format=3 uid="uid://dhwbw4xat3ger"]
+[gd_scene load_steps=172 format=3 uid="uid://dtdtmcahyk6x6"]
 
 [ext_resource type="Texture2D" uid="uid://bmcwxx2s3mx5p" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/1_atk/1_atk_1.png" id="1_66i60"]
 [ext_resource type="Script" uid="uid://cds0vf3c4bav3" path="res://Player/Scripts/player.gd" id="1_p4dcl"]

@@ -1,5 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://bthjn5kha44lj"]
+[gd_scene load_steps=12 format=3 uid="uid://bthjn5kha44lj"]
 
+[ext_resource type="Script" path="res://playground.gd" id="1_playground"]
 [ext_resource type="PackedScene" uid="uid://dhwbw4xat3ger" path="res://Player/player.tscn" id="1_wt17y"]
 [ext_resource type="Script" uid="uid://8q28u2xype6y" path="res://playground_ui.gd" id="3_4bqqs"]
 [ext_resource type="Texture2D" uid="uid://j36uk8c6o4b1" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice46.png" id="4_ynsuh"]
@@ -16,6 +17,8 @@ size = Vector2(539, 20)
 [sub_resource type="CurveXYZTexture" id="CurveXYZTexture_wt17y"]
 
 [node name="Playground" type="Node2D"]
+script = ExtResource("1_playground")
+player_spawn_position = Vector2(100, 100)
 
 [node name="Player" parent="." node_paths=PackedStringArray("touch_controls") instance=ExtResource("1_wt17y")]
 touch_controls = NodePath("../Control/TouchControls")
@@ -62,7 +65,7 @@ texture_normal = ExtResource("6_pi42a")
 texture_pressed = ExtResource("5_v7dth")
 
 [node name="Skeleton" parent="." instance=ExtResource("7_ynsuh")]
-position = Vector2(134, 6)
+position = Vector2(446, 7)
 
 [connection signal="pressed" from="PlaygroundUI/DamageButton" to="PlaygroundUI" method="_on_damage_button_pressed"]
 [connection signal="pressed" from="PlaygroundUI/ResetButton" to="PlaygroundUI" method="_on_reset_button_pressed"]

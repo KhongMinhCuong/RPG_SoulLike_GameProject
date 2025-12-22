@@ -13,7 +13,7 @@ signal cooldown_ready(ability_name: String)
 var stats: PlayerStats  # Reference tới base stats
 
 # === HEALTH ===
-var current_health: float = 100.0:
+var current_health: float = 30.0:
 	set(value):
 		var old = current_health
 		current_health = clamp(value, 0.0, get_max_health())
@@ -55,7 +55,7 @@ func reset_runtime_stats() -> void:
 	if stats:
 		current_health = stats.max_health
 	else:
-		current_health = 100.0
+		current_health = 30.0
 	
 	# Reset cooldowns
 	for key in cooldowns.keys():
@@ -64,8 +64,18 @@ func reset_runtime_stats() -> void:
 # === UPDATE ===
 
 func update(delta: float) -> void:
-	"""Gọi mỗi frame để update cooldowns"""
+	"""Gọi mỗi frame để update cooldowns và HP regen"""
 	_update_cooldowns(delta)
+	_update_hp_regen(delta)
+
+func _update_hp_regen(delta: float) -> void:
+	"""Hồi máu mỗi giây dựa trên hp_regen_per_second"""
+	if stats and stats.hp_regen_per_second > 0 and current_health < get_max_health():
+		var regen_amount = stats.hp_regen_per_second * delta
+		heal(regen_amount)
+		# Debug: Print mỗi giây
+		if Engine.get_frames_drawn() % 60 == 0:
+			print("[HP Regen] +%.1f HP/s | Current: %.0f/%.0f" % [stats.hp_regen_per_second, current_health, get_max_health()])
 
 func _update_cooldowns(delta: float) -> void:
 	"""Update tất cả cooldowns"""
@@ -119,15 +129,19 @@ func use_ability(ability_name: String) -> bool:
 	if not can_use_ability(ability_name):
 		return false
 	
+	# Lấy cooldown reduction từ stats
+	var cd_reduction = stats.cooldown_reduction if stats else 0.0
+	var multiplier = 1.0 - cd_reduction  # 0.05 reduction = 0.95 multiplier
+	
 	match ability_name:
 		"dash":
-			cooldowns[ability_name] = dash_cooldown
+			cooldowns[ability_name] = dash_cooldown * multiplier
 		"special":
-			cooldowns[ability_name] = special_cooldown
+			cooldowns[ability_name] = special_cooldown * multiplier
 		"parry":
-			cooldowns[ability_name] = parry_cooldown
+			cooldowns[ability_name] = parry_cooldown * multiplier
 		"air_attack":
-			cooldowns[ability_name] = air_attack_cooldown
+			cooldowns[ability_name] = air_attack_cooldown * multiplier
 		_:
 			push_warning("Unknown ability: " + ability_name)
 			return false

@@ -15,17 +15,28 @@ func enter(_previous_state: PlayerState) -> void:
 	player._combo_accepting_buffer = false
 	player._combo_window_timer = 0.0
 	
+	# Allow hitbox to deal damage during this attack
+	player._allow_hitbox_activation = true
+	
 	# Freeze trên không
 	player.velocity = Vector2.ZERO
 	
-	# Play animation
-	player.play_animation(player.AIR_ATTACK["anim"] as StringName, true)
+	# Play animation via AnimationPlayer (controls hitbox via method tracks)
+	var anim_name = player.AIR_ATTACK["anim"] as StringName
 	
-	# Enable air attack hitbox (shape 3)
-	if player.hitbox:
-		player.hitbox.enable_shape(3)
+	if not player.animation_player or not player.animation_player.has_animation(anim_name):
+		push_error("AnimationPlayer animation '%s' not found! Create it with method tracks." % anim_name)
+		# Cleanup and exit
+		player._allow_hitbox_activation = false
+		player._end_action(attack_token)
+		if player.is_on_floor():
+			get_parent().change_state("GroundedState")
+		else:
+			get_parent().change_state("AirState")
+		return
 	
-	await player.animated_sprite.animation_finished
+	player.animation_player.play(anim_name)
+	await player.animation_player.animation_finished
 	
 	if attack_token != player._action_token:
 		return  # Bị interrupt
@@ -33,9 +44,8 @@ func enter(_previous_state: PlayerState) -> void:
 	player._reset_combo()
 	player._end_action(attack_token)
 	
-	# Disable hitbox
-	if player.hitbox:
-		player.hitbox.disable()
+	# Prevent further damage from this attack
+	player._allow_hitbox_activation = false
 	
 	# Return về state phù hợp
 	if player.is_on_floor():

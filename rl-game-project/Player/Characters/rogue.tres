@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Player/Scripts/character_data.gd" id="1_rogue"]
+
+[resource]
+script = ExtResource("1_rogue")
+character_id = "rogue"
+character_name = "Rogue"
+description = "Sát thủ nhanh nhẹn với tốc độ và chí mạng cao.
+Khởi đầu với 5 DEX, 5 MOV và 2 LCK.
+Phù hợp cho lối chơi né tránh và crit."
+character_portrait = null
+sprite_frames = null
+starting_strength = 0
+starting_vitality = 0
+starting_dexterity = 5
+starting_movement_speed = 5
+starting_luck = 2
+starting_basic_points = 88
+starting_special_points = 3
+special_ability_name = "Shadow Step"
+special_ability_description = "Dash nhanh không cooldown trong 3s"
+damage_modifier = 1.0
+health_modifier = 1.0
+speed_modifier = 1.0
+player_scene_path = "res://Player/Scenes/player_rogue.tscn"
+game_scene_path = "res://playground.tscn"

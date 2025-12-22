@@ -6,9 +6,17 @@ class_name ParryState
 extends PlayerState
 
 var parry_token: int = 0
+var parry_active: bool = false  # Parry window active
 
 func enter(_previous_state: PlayerState) -> void:
 	parry_token = player._start_action(player.Action.PARRY)
+	
+	# Enable parry mode
+	parry_active = true
+	player.is_parrying = true
+	
+	# Keep hurtbox active to detect hits during parry
+	
 	player.play_animation(&"defend", true)
 	
 	await player.animated_sprite.animation_finished
@@ -17,6 +25,10 @@ func enter(_previous_state: PlayerState) -> void:
 		return  # Bị interrupt
 	
 	player._end_action(parry_token)
+	
+	# Disable parry mode
+	parry_active = false
+	player.is_parrying = false
 	
 	# Return về state phù hợp
 	if player.is_on_floor():

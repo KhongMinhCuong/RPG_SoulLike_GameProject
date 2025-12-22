@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Player/Scripts/character_data.gd" id="1_mage"]
+
+[resource]
+script = ExtResource("1_mage")
+character_id = "mage"
+character_name = "Mage"
+description = "Pháp sư cân bằng với chút may mắn.
+Khởi đầu với 2 VIT, 3 DEX, 2 MOV và 3 LCK.
+Phù hợp cho lối chơi balanced và drop rate cao."
+character_portrait = null
+sprite_frames = null
+starting_strength = 0
+starting_vitality = 2
+starting_dexterity = 3
+starting_movement_speed = 2
+starting_luck = 3
+starting_basic_points = 90
+starting_special_points = 3
+special_ability_name = "Arcane Surge"
+special_ability_description = "Tăng 30% attack speed trong 8s"
+damage_modifier = 1.0
+health_modifier = 1.0
+speed_modifier = 1.0
+player_scene_path = "res://Player/Scenes/player_mage.tscn"
+game_scene_path = "res://playground.tscn"

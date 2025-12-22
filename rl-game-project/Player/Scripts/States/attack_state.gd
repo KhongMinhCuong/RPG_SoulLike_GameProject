@@ -35,13 +35,20 @@ func _execute_attack() -> void:
 	# KHÔNG reset accepting_buffer ở đây - giữ window open liên tục khi continue combo
 	player.combo_step_started.emit(step)
 	
-	# Play main animation
-	var anim_name: StringName = data["anim"] as StringName
-	player.play_animation(anim_name, true)  # Force play để reset animation từ đầu
+	# Allow hitbox to deal damage during this attack
+	player._allow_hitbox_activation = true
 	
-	# Enable specific hitbox shape based on combo step
-	if player.hitbox:
-		player.hitbox.enable_shape(step)
+	# Play animation via AnimationPlayer (controls hitbox via method tracks)
+	var anim_name: StringName = data["anim"] as StringName
+	if not player.animation_player or not player.animation_player.has_animation(anim_name):
+		push_error("AnimationPlayer animation '%s' not found! Create it with method tracks." % anim_name)
+		# Cleanup and exit
+		player._allow_hitbox_activation = false
+		player._end_action(attack_token)
+		get_parent().change_state("GroundedState")
+		return
+	
+	player.animation_player.play(anim_name)
 	
 	# Wait đến buffer_ratio% của animation
 	var anim_length: float = player._get_animation_length(anim_name)
@@ -50,7 +57,11 @@ func _execute_attack() -> void:
 		await player.get_tree().create_timer(anim_length * buffer_ratio).timeout
 	
 	if attack_token != player._action_token:
-		return  # Bị interrupt
+		# Attack was interrupted - prevent any further damage
+		player._allow_hitbox_activation = false
+		if player.hitbox:
+			player.hitbox.disable()
+		return
 	
 	# Mở combo window - từ đây player có thể buffer attack HOẶC dash cancel
 	player._combo_accepting_buffer = true
@@ -88,6 +99,10 @@ func _execute_attack() -> void:
 		# Không có end animation (như 3_atk) - delay 0.2s cho dash cancel window
 		await player.get_tree().create_timer(0.2).timeout
 		if attack_token != player._action_token:
+			# Attack was interrupted - prevent any further damage
+			player._allow_hitbox_activation = false
+			if player.hitbox:
+				player.hitbox.disable()
 			return
 	
 	# Close combo window SAU KHI hết tất cả animations
@@ -99,9 +114,8 @@ func _execute_attack() -> void:
 	
 	player._end_action(attack_token)
 	
-	# Disable hitbox
-	if player.hitbox:
-		player.hitbox.disable()
+	# Prevent further damage from this attack (even if animation continues)
+	player._allow_hitbox_activation = false
 	
 	# Return về state phù hợp
 	if player.is_on_floor():

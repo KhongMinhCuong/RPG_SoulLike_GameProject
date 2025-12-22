@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Player/Scripts/character_data.gd" id="1_warrior"]
+
+[resource]
+script = ExtResource("1_warrior")
+character_id = "warrior"
+character_name = "Warrior"
+description = "Chiến binh mạnh mẽ với sức tấn công cao.
+Khởi đầu với 5 STR và 3 VIT.
+Phù hợp cho lối chơi tấn công trực diện."
+character_portrait = null
+sprite_frames = null
+starting_strength = 5
+starting_vitality = 3
+starting_dexterity = 0
+starting_movement_speed = 0
+starting_luck = 0
+starting_basic_points = 92
+starting_special_points = 3
+special_ability_name = "Power Strike"
+special_ability_description = "Đòn đánh mạnh gây 150% damage"
+damage_modifier = 1.0
+health_modifier = 1.0
+speed_modifier = 1.0
+player_scene_path = "res://Player/Scenes/player_warrior.tscn"
+game_scene_path = "res://playground.tscn"

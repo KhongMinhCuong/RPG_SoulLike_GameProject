@@ -16,6 +16,30 @@ func _ready() -> void:
 		base_stats = PlayerStats.new()
 		print("[Player] Created new PlayerStats")
 	
+	# Load character data từ GameManager (nếu đã chọn nhân vật)
+	# NOTE: GameManager phải được add vào Autoload trước (Project Settings → Autoload)
+	if has_node("/root/GameManager"):
+		var game_manager = get_node("/root/GameManager")
+		if game_manager.has_method("has_selected_character") and game_manager.has_selected_character():
+			var character_data = game_manager.get_selected_character()
+			character_data.apply_to_stats(base_stats)
+			print("[Player] Loaded character: ", character_data.character_name)
+			
+			# Apply sprite frames nếu có
+			if character_data.sprite_frames and animated_sprite:
+				animated_sprite.sprite_frames = character_data.sprite_frames
+		else:
+			# Fallback: Grant starter points nếu không có character data (debug mode)
+			print("[Player] No character selected - using debug mode")
+			base_stats.add_basic_stat_points(100)
+			base_stats.add_special_upgrade_points(3)
+	else:
+		# GameManager chưa được add vào Autoload - dùng debug mode
+		print("[Player] GameManager not found - using debug mode")
+		print("  → Add GameManager to Autoload: Project → Project Settings → Autoload")
+		base_stats.add_basic_stat_points(100)
+		base_stats.add_special_upgrade_points(3)
+	
 	# Initialize runtime stats
 	if runtime_stats:
 		runtime_stats.initialize(base_stats)
@@ -62,8 +86,15 @@ func _physics_process(delta: float) -> void:
 	
 	# Update direction only when moving, preserve last direction when idle
 	var move_dir = sign(controller.get_move_direction().x) if controller else 0
+	
+	# Always track input direction
 	if move_dir != 0:
-		direction = move_dir
+		pre_dir = move_dir
+	
+	# Only update facing direction if not attacking
+	var is_attacking = current_action in [Action.ATTACK, Action.AIR_ATTACK, Action.SPECIAL]
+	if move_dir != 0 and not is_attacking:
+		direction = pre_dir
 	elif direction == 0:  # Initialize first time
 		direction = 1
 	
