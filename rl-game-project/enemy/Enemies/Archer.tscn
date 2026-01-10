@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://b5bm13kcfh472"]
+[gd_scene load_steps=59 format=3 uid="uid://b5bm13kcfh472"]
 
 [ext_resource type="Script" uid="uid://85aiaqtei6el" path="res://enemy/scripts/handle_stat/enemy_base.gd" id="1_ekj3j"]
 [ext_resource type="Texture2D" uid="uid://de00idrw7sre1" path="res://enemy/assets/Huntress/Huntress 2/Sprites/Character/Idle.png" id="1_iodku"]
@@ -13,6 +13,7 @@
 [ext_resource type="Script" uid="uid://b3ftv2hqf657v" path="res://enemy/scripts/states/enemy_idle.gd" id="6_y8u6t"]
 [ext_resource type="Script" uid="uid://dshv77k0nnh0g" path="res://enemy/scripts/states/enemy_patrol.gd" id="7_v8m7k"]
 [ext_resource type="Script" uid="uid://c0cy3058krhq6" path="res://enemy/scripts/states/enemy_hurt_stun.gd" id="8_p52c2"]
+[ext_resource type="PackedScene" uid="uid://dvs3vfjvond1k" path="res://enemy/scenes/arrow.tscn" id="10_gljfb"]
 [ext_resource type="Script" uid="uid://dmruf56l76xem" path="res://enemy/scripts/handle_damage/hurtbox.gd" id="11_v8m7k"]
 [ext_resource type="Script" uid="uid://bayavjk6a55r" path="res://enemy/scripts/states/enemy_death.gd" id="14_afpjq"]
 
@@ -317,7 +318,7 @@ _data = {
 &"attack": SubResource("Animation_gljfb")
 }
 
-[node name="CharacterBody2D" type="CharacterBody2D"]
+[node name="Archer" type="CharacterBody2D"]
 script = ExtResource("1_ekj3j")
 attack_cooldown = 3.0
 attack_range = 150.0
@@ -362,6 +363,7 @@ metadata/_custom_type_script = "uid://b7asdts4ly6ff"
 script = ExtResource("4_ekj3j")
 attack_type = 1
 projectile_spawn = NodePath("../../ArrowSpawn")
+projectile_scene = ExtResource("10_gljfb")
 metadata/_custom_type_script = "uid://cnaeer6xvfh5i"
 
 [node name="EnemyChase" type="Node" parent="StateMachine"]

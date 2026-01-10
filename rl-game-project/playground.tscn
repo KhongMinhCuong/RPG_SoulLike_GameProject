@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://j36uk8c6o4b1" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice46.png" id="4_ynsuh"]
 [ext_resource type="Texture2D" uid="uid://s1u2iv0v0dr5" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice29.png" id="5_v7dth"]
 [ext_resource type="Texture2D" uid="uid://chrf23cgwx70c" path="res://ButtonUI/Sci-Fi Game Icons/Hex/slice36.png" id="6_pi42a"]
-[ext_resource type="PackedScene" uid="uid://b5bm13kcfh472" path="res://enemy/Enemies/Archer.tscn" id="7_ynsuh"]
+[ext_resource type="PackedScene" uid="uid://rm5bk35i3bal" path="res://enemy/Enemies/Wizard.tscn" id="7_ynsuh"]
 [ext_resource type="PackedScene" uid="uid://dn81rpmtx4ouf" path="res://touch_controls.tscn" id="151_e5p2i"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wt17y"]
@@ -62,8 +62,8 @@ scale = Vector2(0.15, 0.15)
 texture_normal = ExtResource("6_pi42a")
 texture_pressed = ExtResource("5_v7dth")
 
-[node name="CharacterBody2D" parent="." instance=ExtResource("7_ynsuh")]
-position = Vector2(332, 216)
+[node name="Wizard" parent="." instance=ExtResource("7_ynsuh")]
+position = Vector2(356, 203)
 
 [connection signal="pressed" from="PlaygroundUI/DamageButton" to="PlaygroundUI" method="_on_damage_button_pressed"]
 [connection signal="pressed" from="PlaygroundUI/ResetButton" to="PlaygroundUI" method="_on_reset_button_pressed"]

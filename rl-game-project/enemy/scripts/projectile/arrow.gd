@@ -7,8 +7,10 @@ var direction: int
 func _ready() -> void:
 	if direction < 0:
 		flip_h = true
+		offset *= -1
 	else:
 		flip_h = false
+	
 	hitbox.enable()
 
 func _physics_process(delta: float) -> void:
