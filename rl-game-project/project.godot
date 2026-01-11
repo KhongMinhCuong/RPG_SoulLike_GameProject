@@ -11,15 +11,24 @@ config_version=5
 [application]
 
 config/name="RL_GameProject"
-run/main_scene="uid://bthjn5kha44lj"
+run/main_scene="uid://cq4b33cmc5uu8"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GameManager="*res://Scripts/game_manager.gd"
 
 [display]
 
 window/size/viewport_width=480
 window/size/viewport_height=270
 window/stretch/mode="viewport"
+window/main_scene="uid://bthjn5kha44lj"
+
+[dotnet]
+
+project/assembly_name="RL_GameProject"
 
 [dotnet]
 
@@ -82,6 +91,11 @@ parry={
 special={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":73,"key_label":0,"unicode":105,"location":0,"echo":false,"script":null)
+]
+}
+ability_1={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":81,"key_label":0,"unicode":113,"location":0,"echo":false,"script":null)
 ]
 }
 

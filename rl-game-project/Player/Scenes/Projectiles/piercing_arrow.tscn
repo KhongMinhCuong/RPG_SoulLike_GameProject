@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://bvnx8km4qr2dp"]
+
+[ext_resource type="Script" uid="uid://cyo0pqq7rgw" path="res://Player/Scripts/Projectiles/player_arrow.gd" id="1_arrow"]
+
+[sub_resource type="Gradient" id="Gradient_piercing"]
+colors = PackedColorArray(0.4, 0.9, 1, 1, 0.2, 0.5, 0.8, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_piercing"]
+gradient = SubResource("Gradient_piercing")
+width = 32
+height = 5
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_piercing"]
+size = Vector2(28, 5)
+
+[node name="PiercingArrow" type="Area2D"]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_arrow")
+arrow_type = "piercing"
+speed = 550.0
+damage = 40.0
+lifetime = 5.0
+piercing = true
+max_pierce_count = 5
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_piercing")
+offset = Vector2(-4, 0)
+
+[node name="ArrowHead" type="Polygon2D" parent="Sprite2D"]
+color = Color(0.3, 0.8, 1, 1)
+polygon = PackedVector2Array(12, 0, 4, -5, 4, 5)
+
+[node name="ArrowTail" type="Polygon2D" parent="Sprite2D"]
+color = Color(0.2, 0.4, 0.6, 1)
+polygon = PackedVector2Array(-20, 0, -26, -4, -22, 0, -26, 4)
+
+[node name="GlowEffect" type="PointLight2D" parent="Sprite2D"]
+light_mask = 4
+visibility_layer = 3
+color = Color(0.4, 0.8, 1, 0.5)
+energy = 0.8
+texture_scale = 0.3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_piercing")

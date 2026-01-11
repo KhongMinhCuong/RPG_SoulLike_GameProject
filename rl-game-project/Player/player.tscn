@@ -1,4 +1,4 @@
-[gd_scene load_steps=165 format=3 uid="uid://dhwbw4xat3ger"]
+[gd_scene load_steps=172 format=3 uid="uid://dhwbw4xat3ger"]
 
 [ext_resource type="Texture2D" uid="uid://bmcwxx2s3mx5p" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/1_atk/1_atk_1.png" id="1_66i60"]
 [ext_resource type="Script" uid="uid://cds0vf3c4bav3" path="res://Player/Scripts/player.gd" id="1_p4dcl"]
@@ -296,13 +296,13 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("55_517ue")
-}, {
-"duration": 1.0,
 "texture": ExtResource("53_ib1vr")
 }, {
 "duration": 1.0,
 "texture": ExtResource("54_w7j8g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("55_517ue")
 }, {
 "duration": 1.0,
 "texture": ExtResource("56_uq8wy")
@@ -639,6 +639,175 @@ animations = [{
 "speed": 12.0
 }]
 
+[sub_resource type="Animation" id="Animation_y7oqx"]
+resource_name = "1_atk"
+length = 0.4
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"values": [{
+"args": [&"1_atk"],
+"method": &"play_sprite_animation"
+}, {
+"args": [0],
+"method": &"enable_hitbox_shape"
+}, {
+"args": [],
+"method": &"disable_all_hitboxes"
+}, {
+"args": [0],
+"method": &"enable_hitbox_shape"
+}, {
+"args": [],
+"method": &"disable_all_hitboxes"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_hd7b1"]
+length = 0.001
+
+[sub_resource type="Animation" id="Animation_6rexp"]
+resource_name = "2_atk"
+length = 0.7
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"values": [{
+"args": [&"2_atk"],
+"method": &"play_sprite_animation"
+}, {
+"args": [1],
+"method": &"enable_hitbox_shape"
+}, {
+"args": [],
+"method": &"disable_all_hitboxes"
+}, {
+"args": [1],
+"method": &"enable_hitbox_shape"
+}, {
+"args": [],
+"method": &"disable_all_hitboxes"
+}, {
+"args": [1],
+"method": &"enable_hitbox_shape"
+}, {
+"args": [],
+"method": &"disable_all_hitboxes"
+}, {
+"args": [1],
+"method": &"enable_hitbox_shape"
+}, {
+"args": [],
+"method": &"disable_all_hitboxes"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_q8bse"]
+resource_name = "3_atk"
+length = 1.5
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.7, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"values": [{
+"args": [&"3_atk"],
+"method": &"play_sprite_animation"
+}, {
+"args": [2],
+"method": &"enable_hitbox_shape"
+}, {
+"args": [],
+"method": &"disable_all_hitboxes"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_kjopa"]
+resource_name = "air_atk"
+length = 0.7
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"values": [{
+"args": [&"air_atk"],
+"method": &"play_sprite_animation"
+}, {
+"args": [3],
+"method": &"enable_hitbox_shape"
+}, {
+"args": [],
+"method": &"disable_all_hitboxes"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_jl3q8"]
+resource_name = "sp_atk"
+length = 3.0
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.2, 1.25, 1.8, 1.85, 1.9, 1.95),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"values": [{
+"args": [&"sp_atk"],
+"method": &"play_sprite_animation"
+}, {
+"args": [4],
+"method": &"enable_hitbox_shape"
+}, {
+"args": [],
+"method": &"disable_all_hitboxes"
+}, {
+"args": [4],
+"method": &"_end_action"
+}, {
+"args": [],
+"method": &"disable_all_hitboxes"
+}, {
+"args": [4],
+"method": &"enable_hitbox_shape"
+}, {
+"args": [],
+"method": &"disable_all_hitboxes"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hd7b1"]
+_data = {
+&"1_atk": SubResource("Animation_y7oqx"),
+&"2_atk": SubResource("Animation_6rexp"),
+&"3_atk": SubResource("Animation_q8bse"),
+&"RESET": SubResource("Animation_hd7b1"),
+&"air_atk": SubResource("Animation_kjopa"),
+&"sp_atk": SubResource("Animation_jl3q8")
+}
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e03cm"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f5mc5"]
@@ -669,10 +838,10 @@ size = Vector2(42, 37)
 size = Vector2(99, 45)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_y7oqx"]
-size = Vector2(37, 58)
+size = Vector2(37, 67)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hd7b1"]
-size = Vector2(139, 64)
+size = Vector2(139, 81)
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 collision_layer = 4
@@ -686,10 +855,13 @@ shape = SubResource("RectangleShape2D_edjgo")
 [node name="Sprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_xl8ig")
-animation = &"sp_atk"
-frame = 29
-frame_progress = 1.0
+animation = &"air_atk"
 offset = Vector2(0, -63)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_hd7b1")
+}
 
 [node name="Camera2D" type="Camera2D" parent="."]
 offset = Vector2(0, -70)
@@ -791,11 +963,11 @@ position = Vector2(59.5, -25.5)
 shape = SubResource("RectangleShape2D_jl3q8")
 
 [node name="Hitbox4" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(33.5, -32)
+position = Vector2(33.5, -27.5)
 shape = SubResource("RectangleShape2D_y7oqx")
 
 [node name="Hitbox5" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(0.5, -32)
+position = Vector2(0.5, -23.5)
 shape = SubResource("RectangleShape2D_hd7b1")
 
 [connection signal="timeout" from="UI/HealthBar/Timer" to="UI/HealthBar" method="_on_timer_timeout"]

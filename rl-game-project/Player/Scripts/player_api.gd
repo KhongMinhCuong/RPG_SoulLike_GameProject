@@ -30,12 +30,22 @@ signal hit_taken(amount: float)
 ## Special attack properties
 @export var invincible_during_special: bool = false  # Nhân vật bất tử khi dùng sp_atk
 
+## Ranged Character Flag
+@export var is_ranged_character: bool = false  # True = spawn projectile, False = melee hitbox
+
+## Direction tracking
+var pre_dir: int = 1  # Previous/pending direction from input
+
+## Parry state
+var is_parrying: bool = false  # Currently in parry window
+
 # Touch controls
 @export var joystick_left: VirtualJoystick
 @export var joystick_right: VirtualJoystick
 @export var touch_controls: TouchControls
 
 @onready var animated_sprite: AnimatedSprite2D = $Sprite2D
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var health_bar = $UI/HealthBar
 @onready var runtime_stats: PlayerRuntimeStats = $RuntimeStats
 @onready var hitbox: Area2D = $Hitbox
@@ -74,6 +84,56 @@ var dash_direction := Vector2.ZERO  # Hướng dash gần nhất
 var damage: float:
 	get:
 		return base_stats.base_damage if base_stats else 10.0
+
+# Flag to prevent damage when attack is interrupted
+var _allow_hitbox_activation: bool = false
+
+# === ANIMATION METHODS (callable from AnimationPlayer) ===
+func enable_hitbox_shape(shape_index: int) -> void:
+	"""Enable specific hitbox shape - callable from AnimationPlayer method tracks"""
+	# Only enable if attack is still valid (not interrupted)
+	if not _allow_hitbox_activation:
+		print("[Player] enable_hitbox_shape blocked: _allow_hitbox_activation = false")
+		return
+	
+	# For ranged characters, spawn projectile instead of enabling hitbox
+	if is_ranged_character:
+		print("[Player] Ranged character - spawning projectile instead of hitbox")
+		_spawn_projectile_from_hitbox()
+	else:
+		# Melee: enable hitbox as normal
+		if hitbox:
+			hitbox.enable_shape(shape_index)
+
+func _spawn_projectile_from_hitbox() -> void:
+	"""Spawn projectile for ranged character - called from enable_hitbox_shape"""
+	var spawner = get_node_or_null("ProjectileSpawner")
+	if spawner:
+		print("[Player] ProjectileSpawner found, spawning...")
+		if spawner.has_method("spawn_combo_arrow"):
+			spawner.spawn_combo_arrow()
+		elif spawner.has_method("spawn_facing_projectile"):
+			spawner.spawn_facing_projectile()
+	else:
+		push_warning("[Player] ProjectileSpawner not found!")
+
+func disable_all_hitboxes() -> void:
+	"""Disable all hitboxes - callable from AnimationPlayer method tracks"""
+	if hitbox:
+		hitbox.disable()
+
+func play_sprite_animation(anim_name: StringName) -> void:
+	"""Play sprite animation - callable from AnimationPlayer"""
+	if animated_sprite:
+		animated_sprite.play(anim_name)
+		# Apply attack speed multiplier for attack animations
+		if runtime_stats and (anim_name.contains("atk") or anim_name.contains("attack")):
+			var speed_mult = runtime_stats.get_attack_speed_multiplier()
+			animation_player.speed_scale = speed_mult
+		else:
+			# Reset speed for non-attack animations
+			if animation_player:
+				animation_player.speed_scale = 1.0
 
 # === PRIVATE VARIABLES ===
 # Token system để invalidate async paths
@@ -135,6 +195,13 @@ func take_damage(amount: float) -> void:
 	if current_action == Action.DEAD or not runtime_stats:
 		return
 	
+	# PARRY MECHANIC: If parrying, take 0 damage and don't interrupt
+	if is_parrying:
+		print("[Player] Parried attack! Taking 0 damage.")
+		# Don't take any damage - skip runtime_stats.take_damage() completely
+		# Don't emit hit_taken (prevents state change to HitstunState)
+		return
+	
 	hit_taken.emit(amount)  # Signal để chuyển sang HitstunState
 	var _actual_damage = runtime_stats.take_damage(amount)
 	
@@ -184,6 +251,15 @@ func play_animation(anim_name: StringName, force: bool = false) -> void:
 	
 	if force or animated_sprite.animation != anim_name:
 		animated_sprite.play(anim_name)
+	
+	# Apply attack speed multiplier for attack animations
+	# Animation names: 1_atk, 2_atk, 3_atk, air_atk, etc.
+	if runtime_stats and (anim_name.contains("atk") or anim_name.contains("attack") or anim_name.contains("slash")):
+		var speed_mult = runtime_stats.get_attack_speed_multiplier()
+		animated_sprite.speed_scale = speed_mult
+	else:
+		# Reset speed for non-attack animations
+		animated_sprite.speed_scale = 1.0
 
 # === ACTION TOKEN SYSTEM ===
 # Token được increment mỗi khi start/interrupt action

@@ -10,15 +10,16 @@ func enter(_previous_state: PlayerState) -> void:
 	pass
 
 ## Được gọi khi rời khỏi state này
-func exit(_next_state: PlayerState) -> void:
+@warning_ignore("unused_parameter")
+func exit(next_state: PlayerState) -> void:
 	pass
 
 ## Được gọi mỗi physics frame
-func physics_update(delta: float) -> void:
+func physics_update(_delta: float) -> void:
 	pass
 
 ## Xử lý input từ controller
-func handle_input(controller: PlayerController) -> void:
+func handle_input(_controller: PlayerController) -> void:
 	pass
 
 ## Tên state để debug

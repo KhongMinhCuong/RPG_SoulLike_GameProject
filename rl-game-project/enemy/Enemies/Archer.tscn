@@ -14,7 +14,7 @@
 [ext_resource type="Script" uid="uid://dshv77k0nnh0g" path="res://enemy/scripts/states/enemy_patrol.gd" id="7_v8m7k"]
 [ext_resource type="Script" uid="uid://c0cy3058krhq6" path="res://enemy/scripts/states/enemy_hurt_stun.gd" id="8_p52c2"]
 [ext_resource type="Script" uid="uid://dmruf56l76xem" path="res://enemy/scripts/handle_damage/hurtbox.gd" id="11_v8m7k"]
-[ext_resource type="Script" uid="uid://bayavjk6a55r" path="res://enemy/scripts/states/enemy_death.gd" id="14_afpjq"]
+[ext_resource type="Script" path="res://enemy/scripts/states/enemy_death.gd" id="14_afpjq"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_p52c2"]
 
@@ -317,7 +317,7 @@ _data = {
 &"attack": SubResource("Animation_gljfb")
 }
 
-[node name="CharacterBody2D" type="CharacterBody2D"]
+[node name="Archer" type="CharacterBody2D"]
 script = ExtResource("1_ekj3j")
 attack_cooldown = 3.0
 attack_range = 150.0
@@ -383,7 +383,6 @@ metadata/_custom_type_script = "uid://c0cy3058krhq6"
 
 [node name="EnemyDeath" type="Node" parent="StateMachine"]
 script = ExtResource("14_afpjq")
-metadata/_custom_type_script = "uid://bayavjk6a55r"
 
 [node name="Hurtbox" type="Area2D" parent="."]
 script = ExtResource("11_v8m7k")
