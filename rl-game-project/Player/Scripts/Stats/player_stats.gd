@@ -77,9 +77,12 @@ var dash_speed: float = 400.0
 var cooldown_reduction: float = 0.0  # Giảm cooldown % từ dexterity
 
 ## Other Stats
-var drop_rate_multiplier: float = 1.0
 var damage_reduction: float = 0.0  # % giảm sát thương nhận vào
 var hp_regen_per_second: float = 0.0  # HP hồi mỗi giây
+
+## Ability Buff Modifiers (temporary bonuses from abilities)
+var damage_multiplier: float = 1.0  # Multiplier cho damage (từ abilities như Battle Fury)
+var defense_bonus: int = 0  # Bonus defense (từ abilities như Fortify)
 
 # === STAT SCALING FORMULAS ===
 @export_group("Stat Scaling Formulas")
@@ -105,12 +108,13 @@ var hp_regen_per_second: float = 0.0  # HP hồi mỗi giây
 ## Cooldown Reduction = dexterity * cooldown_per_dex
 @export var cooldown_per_dex: float = 0.01  # 1% per point
 
-## Crit Chance = base + (dexterity * crit_per_dex)
+## Crit Chance = base + (luck * crit_per_luck)
 @export var base_crit_chance: float = 0.05  # 5%
-@export var crit_per_dex: float = 0.001  # 0.1% per point
+@export var crit_per_luck: float = 0.01  # 1% per point
 
-## Drop Rate = 1.0 + (luck * drop_per_luck)
-@export var drop_per_luck: float = 0.02  # 2% per point
+## Crit Multiplier = base + (luck * crit_mult_per_luck)
+@export var base_crit_multiplier: float = 1.5  # 150% base
+@export var crit_mult_per_luck: float = 0.02  # +2% crit damage per luck
 
 # === INITIALIZATION ===
 func _init() -> void:
@@ -418,31 +422,33 @@ func _recalculate_speed_stats() -> void:
 		stat_changed.emit("cooldown_reduction", old_cd_red, cooldown_reduction)
 
 func _recalculate_luck_stats() -> void:
-	"""Tính lại luck stats và crit chance từ dexterity"""
+	"""Tính lại luck stats: crit chance và crit multiplier"""
 	var old_crit = critical_chance
-	var old_drop = drop_rate_multiplier
+	var old_crit_mult = critical_multiplier
 	
-	var eff_dex = effective_stat(dexterity, dexterity_max_value, dexterity_scale)
 	var eff_luck = effective_stat(luck, luck_max_value, luck_scale)
 	
-	# Crit chance từ dexterity (không còn từ luck)
-	critical_chance = base_crit_chance + (eff_dex * crit_per_dex)
+	# Crit chance từ luck only
+	critical_chance = base_crit_chance + (eff_luck * crit_per_luck)
 	# Áp dụng crit chance boost từ special upgrades
 	critical_chance += get_special_upgrade_bonus(SpecialUpgradeType.CRIT_CHANCE_BOOST)
 	
-	# Drop rate từ luck
-	drop_rate_multiplier = 1.0 + (eff_luck * drop_per_luck)
+	# Crit multiplier từ luck
+	critical_multiplier = base_crit_multiplier + (eff_luck * crit_mult_per_luck)
 	
 	if old_crit != critical_chance:
 		stat_changed.emit("critical_chance", old_crit, critical_chance)
-	if old_drop != drop_rate_multiplier:
-		stat_changed.emit("drop_rate_multiplier", old_drop, drop_rate_multiplier)
+	if old_crit_mult != critical_multiplier:
+		stat_changed.emit("critical_multiplier", old_crit_mult, critical_multiplier)
 
 # === COMBAT CALCULATIONS ===
 
 func calculate_damage_dealt(base_dmg: float = 0.0) -> float:
-	"""Tính damage gây ra (có xét crit)"""
+	"""Tính damage gây ra (có xét crit và damage_multiplier từ abilities)"""
 	var final_damage = base_dmg if base_dmg > 0.0 else base_damage
+	
+	# Áp dụng damage_multiplier từ abilities (như Battle Fury)
+	final_damage *= damage_multiplier
 	
 	# Roll for critical hit
 	if randf() < critical_chance:
@@ -451,8 +457,10 @@ func calculate_damage_dealt(base_dmg: float = 0.0) -> float:
 	return final_damage
 
 func calculate_damage_taken(incoming_damage: float) -> float:
-	"""Tính damage nhận vào sau khi trừ defense và áp dụng damage reduction"""
-	var reduced_damage = incoming_damage - defense
+	"""Tính damage nhận vào sau khi trừ defense, defense_bonus và áp dụng damage reduction"""
+	# Áp dụng cả defense base và bonus từ abilities
+	var total_defense = defense + defense_bonus
+	var reduced_damage = incoming_damage - total_defense
 	reduced_damage = max(1.0, reduced_damage)  # Tối thiểu 1 damage
 	# Áp dụng damage reduction % từ special upgrades
 	reduced_damage *= (1.0 - damage_reduction)
@@ -482,7 +490,6 @@ func get_stat_summary() -> Dictionary:
 		"attack_speed": attack_speed_multiplier,
 		"crit_chance": critical_chance,
 		"crit_multiplier": critical_multiplier,
-		"drop_rate": drop_rate_multiplier,
 		"cooldown_reduction": cooldown_reduction,
 		"damage_reduction": damage_reduction,
 		"hp_regen_per_second": hp_regen_per_second,

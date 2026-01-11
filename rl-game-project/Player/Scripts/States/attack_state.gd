@@ -4,10 +4,18 @@
 ## - Combo buffer system (buffer_ratio = 60-65%)
 ## - Dash cancel được trong toàn bộ combo window
 ## - Token-based async safety
+## - Hỗ trợ cả melee (hitbox) và ranged (projectile) attacks
 class_name AttackState
 extends PlayerState
 
+# Projectile spawner reference (for ranged attacks)
+var projectile_spawner: Node = null
+
 func enter(_previous_state: PlayerState) -> void:
+	# Find ProjectileSpawner for ranged characters
+	if player.is_ranged_character:
+		projectile_spawner = player.get_node_or_null("ProjectileSpawner")
+	
 	# Close combo window từ lần attack trước (nếu re-enter từ chính state này)
 	if _previous_state and _previous_state.get_state_name() == "attack_state":
 		player._combo_accepting_buffer = false
@@ -35,7 +43,7 @@ func _execute_attack() -> void:
 	# KHÔNG reset accepting_buffer ở đây - giữ window open liên tục khi continue combo
 	player.combo_step_started.emit(step)
 	
-	# Allow hitbox to deal damage during this attack
+	# Allow hitbox/projectile to deal damage during this attack
 	player._allow_hitbox_activation = true
 	
 	# Play animation via AnimationPlayer (controls hitbox via method tracks)
@@ -48,13 +56,21 @@ func _execute_attack() -> void:
 		get_parent().change_state("GroundedState")
 		return
 	
+	# Apply attack speed multiplier BEFORE playing animation
+	if player.runtime_stats:
+		var speed_mult = player.runtime_stats.get_attack_speed_multiplier()
+		player.animation_player.speed_scale = speed_mult
+		print("[AttackState] Attack speed: %.0f%%" % (speed_mult * 100))
+	
 	player.animation_player.play(anim_name)
 	
-	# Wait đến buffer_ratio% của animation
+	# Wait đến buffer_ratio% của animation (đã áp dụng speed_scale)
 	var anim_length: float = player._get_animation_length(anim_name)
 	if anim_length > 0.0:
 		var buffer_ratio := float(data.get("buffer_ratio", 0.6))
-		await player.get_tree().create_timer(anim_length * buffer_ratio).timeout
+		# Chia cho speed_scale vì animation chạy nhanh hơn
+		var wait_time = (anim_length * buffer_ratio) / player.animation_player.speed_scale
+		await player.get_tree().create_timer(wait_time).timeout
 	
 	if attack_token != player._action_token:
 		# Attack was interrupted - prevent any further damage
@@ -155,5 +171,21 @@ func handle_input(controller: PlayerController) -> void:
 			return
 
 func exit(_next_state: PlayerState) -> void:
+	# Reset animation speed when exiting attack state
+	if player.animation_player:
+		player.animation_player.speed_scale = 1.0
 	# Combo timer được update ở player._physics_process
-	pass
+
+## Spawn projectile cho ranged attack
+func _spawn_projectile() -> void:
+	if not projectile_spawner:
+		push_warning("[AttackState] ProjectileSpawner not found for ranged attack!")
+		return
+	
+	# Gọi spawn_combo_arrow từ ProjectileSpawner
+	if projectile_spawner.has_method("spawn_combo_arrow"):
+		projectile_spawner.spawn_combo_arrow()
+	elif projectile_spawner.has_method("spawn_facing_projectile"):
+		projectile_spawner.spawn_facing_projectile()
+	else:
+		push_warning("[AttackState] ProjectileSpawner doesn't have spawn method!")

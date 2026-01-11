@@ -171,15 +171,15 @@ func _update_calculated_stats_display() -> void:
 	text += "\n"
 	text += "DMG: %.0f\n" % player_stats.base_damage
 	text += "DEF: %.0f" % player_stats.defense
-	if player_stats.damage_reduction > 0:
-		text += " (-%.0f%% DMG)" % (player_stats.damage_reduction * 100)
+	# Show damage reduction from defense (calculate actual reduction %)
+	var dmg_reduction_from_def = player_stats.defense / (player_stats.defense + 100.0) * 100.0
+	text += " (-%.1f%% DMG)" % dmg_reduction_from_def
 	text += "\n"
 	text += "SPD: %.0f\n" % player_stats.move_speed
 	text += "ATK SPD: %.0f%%\n" % (player_stats.attack_speed_multiplier * 100)
 	if player_stats.cooldown_reduction > 0:
 		text += "CD: -%.0f%%\n" % (player_stats.cooldown_reduction * 100)
-	text += "CRIT: %.1f%%\n" % (player_stats.critical_chance * 100)
-	text += "DROP: +%.0f%%" % ((player_stats.drop_rate_multiplier - 1.0) * 100)
+	text += "CRIT: %.1f%% (x%.0f%%)\n" % [player_stats.critical_chance * 100, player_stats.critical_multiplier * 100]
 	
 	calculated_stats_label.text = text
 

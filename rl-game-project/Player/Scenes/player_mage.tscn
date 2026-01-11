@@ -1,7 +1,8 @@
-[gd_scene load_steps=172 format=3 uid="uid://dtdtmcahyk6x6"]
+[gd_scene load_steps=174 format=3 uid="uid://dtdtmcahyk6x6"]
 
 [ext_resource type="Texture2D" uid="uid://bmcwxx2s3mx5p" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/1_atk/1_atk_1.png" id="1_66i60"]
 [ext_resource type="Script" uid="uid://cds0vf3c4bav3" path="res://Player/Scripts/player.gd" id="1_p4dcl"]
+[ext_resource type="Script" uid="uid://3uvrqwq8voxv" path="res://Player/Scripts/Stats/player_stats.gd" id="2_e8an7"]
 [ext_resource type="Texture2D" uid="uid://wi2ubgbn5fnb" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/1_atk/1_atk_2.png" id="2_mqy1v"]
 [ext_resource type="Texture2D" uid="uid://c48jtnlemqa87" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/1_atk/1_atk_3.png" id="3_7hkci"]
 [ext_resource type="Texture2D" uid="uid://b758t6vh0qtgv" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/1_atk/1_atk_4.png" id="4_kgchn"]
@@ -146,12 +147,16 @@
 [ext_resource type="Script" uid="uid://c6q1mq053stku" path="res://Player/Scripts/Controllers/local_controller.gd" id="147_jl3q8"]
 [ext_resource type="Texture2D" uid="uid://g04c6in0hd6l" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_3.png" id="147_vt77p"]
 [ext_resource type="Texture2D" uid="uid://dm85wl5xmvnq4" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_4.png" id="148_58c4j"]
-[ext_resource type="Script" uid="uid://m53y0vhju4h4" path="res://Player/Scripts/player_runtime_stats.gd" id="148_fm5nm"]
+[ext_resource type="Script" uid="uid://m53y0vhju4h4" path="res://Player/Scripts/Stats/player_runtime_stats.gd" id="148_fm5nm"]
 [ext_resource type="Texture2D" uid="uid://cnht08rfsfr1d" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_5.png" id="149_tpmwr"]
 [ext_resource type="PackedScene" uid="uid://dxv8h7yw3rjtv" path="res://Player/UI/stats_ui.tscn" id="150_c4oyh"]
 [ext_resource type="Texture2D" uid="uid://cgo5hqyqvfirh" path="res://Player/Sprites/elementals_wind_hashashin_FREE_v1.1/elementals_wind_hashashin_FREE_v1.1/PNG/take_hit/take_hit_6.png" id="150_hfq5i"]
-[ext_resource type="Script" uid="uid://dmruf56l76xem" path="res://enemy/scripts/hadle_damage/hurtbox.gd" id="151_y7oqx"]
-[ext_resource type="Script" uid="uid://prsrjd5xwfrm" path="res://enemy/scripts/hadle_damage/hitbox.gd" id="152_hd7b1"]
+[ext_resource type="Script" uid="uid://dmruf56l76xem" path="res://enemy/scripts/handle_damage/hurtbox.gd" id="151_y7oqx"]
+[ext_resource type="Script" uid="uid://prsrjd5xwfrm" path="res://enemy/scripts/handle_damage/hitbox.gd" id="152_hd7b1"]
+
+[sub_resource type="Resource" id="Resource_dixx7"]
+script = ExtResource("2_e8an7")
+metadata/_custom_type_script = "uid://3uvrqwq8voxv"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_edjgo"]
 size = Vector2(16, 35)
@@ -669,9 +674,6 @@ tracks/0/keys = {
 }]
 }
 
-[sub_resource type="Animation" id="Animation_hd7b1"]
-length = 0.001
-
 [sub_resource type="Animation" id="Animation_6rexp"]
 resource_name = "2_atk"
 length = 0.7
@@ -737,6 +739,9 @@ tracks/0/keys = {
 "method": &"disable_all_hitboxes"
 }]
 }
+
+[sub_resource type="Animation" id="Animation_hd7b1"]
+length = 0.001
 
 [sub_resource type="Animation" id="Animation_kjopa"]
 resource_name = "air_atk"
@@ -846,6 +851,7 @@ size = Vector2(139, 81)
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 collision_layer = 4
 script = ExtResource("1_p4dcl")
+base_stats = SubResource("Resource_dixx7")
 invincible_during_special = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

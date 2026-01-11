@@ -1,6 +1,8 @@
 ## Playground Scene - Main game scene để test và chơi
 extends Node2D
 
+const GameConstants = preload("res://Scripts/game_constants.gd")
+
 @export var player_spawn_position: Vector2 = Vector2(100, 100)  # Vị trí spawn player
 
 @onready var touch_controls = $Control/TouchControls  # Reference đến touch controls
@@ -18,11 +20,11 @@ func _spawn_player() -> void:
 	"""Spawn player instance theo character đã chọn từ GameManager"""
 	
 	# Kiểm tra GameManager
-	if not has_node("/root/GameManager"):
+	if not has_node(GameConstants.GAME_MANAGER_PATH):
 		push_error("[Playground] GameManager not found!")
 		return
 	
-	var game_manager = get_node("/root/GameManager")
+	var game_manager = get_node(GameConstants.GAME_MANAGER_PATH)
 	
 	# Kiểm tra đã chọn character chưa
 	if not game_manager.has_selected_character():
@@ -47,31 +49,37 @@ func _spawn_player() -> void:
 	# Lưu lại vị trí và touch controls của player cũ
 	var old_player = get_node_or_null("Player")
 	var old_position = player_spawn_position
-	var old_touch_controls_path = NodePath()
+	
+	# Instance player mới trước
+	var player_instance = player_scene.instantiate()
+	player_instance.name = "Player"
 	
 	if old_player:
 		print("[Playground] Found old player, replacing...")
 		old_position = old_player.position
 		
-		# Lưu touch_controls reference
-		if old_player.has("touch_controls") and old_player.touch_controls:
-			old_touch_controls_path = old_player.get_path_to(old_player.touch_controls)
-		
-		# Xóa player cũ
+		# Remove player cũ khỏi scene tree trước
+		remove_child(old_player)
+		# Xóa player cũ sau khi đã remove khỏi tree
 		old_player.queue_free()
 	
-	# Instance player mới
-	var player_instance = player_scene.instantiate()
-	player_instance.name = "Player"
+	# Set vị trí cho player mới
 	player_instance.position = old_position
 	
 	# Gán touch controls reference
-	if player_instance.has("touch_controls") and touch_controls:
+	if "touch_controls" in player_instance and touch_controls:
 		player_instance.touch_controls = touch_controls
 		print("[Playground] Touch controls assigned to player")
 	
-	# Add vào scene
+	# Add player mới vào scene (enemy sẽ tìm lại qua group "Player")
 	add_child(player_instance)
+	
+	# Đợi 1 frame để player được add vào scene tree đầy đủ
+	await get_tree().process_frame
+	
+	# Update tất cả enemies để họ biết về player mới
+	_update_enemies_player_reference(player_instance)
+	
 	print("[Playground] Player spawned at ", player_instance.position)
 	print("[Playground] Player visible: ", player_instance.visible)
 	
@@ -81,3 +89,32 @@ func _spawn_player() -> void:
 	for child in get_children():
 		if child is Node2D:
 			print("  - ", child.name, " at position ", child.position, " visible: ", child.visible)
+
+func _update_enemies_player_reference(new_player: CharacterBody2D) -> void:
+	"""Update tất cả enemies để họ biết về player mới"""
+	# Tìm tất cả enemies trong scene (giả sử enemies là CharacterBody2D và có property 'player')
+	for node in get_tree().get_nodes_in_group("Enemy"):
+		if "player" in node:
+			node.player = new_player
+			print("[Playground] Updated enemy ", node.name, " player reference")
+	
+	# Fallback: tìm theo type nếu không có group
+	var all_enemies = _find_all_enemies(self)
+	for enemy in all_enemies:
+		if "player" in enemy:
+			enemy.player = new_player
+			print("[Playground] Updated enemy ", enemy.name, " player reference (by type)")
+
+func _find_all_enemies(node: Node) -> Array:
+	"""Đệ quy tìm tất cả enemy nodes (fallback nếu không có group)"""
+	var enemies: Array = []
+	
+	# Check nếu node này là enemy (có property 'player' và không phải Player)
+	if "player" in node and node != get_node_or_null("Player"):
+		enemies.append(node)
+	
+	# Đệ quy qua các children
+	for child in node.get_children():
+		enemies.append_array(_find_all_enemies(child))
+	
+	return enemies

@@ -28,9 +28,24 @@ extends Resource
 @export var starting_basic_points: int = 100  # Điểm ban đầu để phân phối
 @export var starting_special_points: int = 3
 
-# === ABILITIES (Optional - có thể làm sau) ===
+# === ABILITIES ===
+@export_group("Abilities")
 @export var special_ability_name: String = ""
 @export var special_ability_description: String = ""
+
+## Active ability script paths - mỗi path là 1 script kế thừa AbilityBase
+@export var ability_script_paths: Array[String] = []
+
+## Input actions tương ứng với mỗi ability (ability_1, ability_2, etc.)
+@export var ability_input_actions: Array[String] = []
+
+## Passive ability script paths - mỗi path là 1 script kế thừa PassiveBase
+@export var passive_script_paths: Array[String] = []
+
+# === PROJECTILE (for ranged characters) ===
+@export_group("Projectile")
+@export_file("*.tscn") var projectile_scene_path: String = ""  # Scene projectile cho ranged attacks
+@export var is_ranged_character: bool = false  # True nếu nhân vật dùng ranged attack
 
 # === GAMEPLAY MODIFIERS (Optional) ===
 @export var damage_modifier: float = 1.0  # Multiplier cho damage

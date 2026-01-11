@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CharacterData" load_steps=3 format=3 uid="uid://c015cf7s354bu"]
 
-[ext_resource type="Script" path="res://Player/Scripts/character_data.gd" id="1_tank"]
+[ext_resource type="Script" uid="uid://brjyjpsr317hn" path="res://Player/Scripts/character_data.gd" id="1_tank"]
+[ext_resource type="Texture2D" uid="uid://chxepi0rj67pn" path="res://Player/Characters/Portraits/fire_knight.png" id="2_portrait"]
 
 [resource]
 script = ExtResource("1_tank")
@@ -9,19 +10,14 @@ character_name = "Tank"
 description = "Xe tăng bất tử với phòng thủ siêu cao.
 Khởi đầu với 8 VIT và 2 STR.
 Phù hợp cho lối chơi tank damage và survive lâu."
-character_portrait = null
-sprite_frames = null
-starting_strength = 2
-starting_vitality = 8
-starting_dexterity = 0
-starting_movement_speed = 0
-starting_luck = 0
-starting_basic_points = 90
-starting_special_points = 3
-special_ability_name = "Iron Wall"
-special_ability_description = "Giảm 50% damage nhận vào trong 5s"
-damage_modifier = 1.0
-health_modifier = 1.0
-speed_modifier = 1.0
+character_portrait = ExtResource("2_portrait")
 player_scene_path = "res://Player/Scenes/player_tank.tscn"
 game_scene_path = "res://playground.tscn"
+starting_strength = 2
+starting_vitality = 8
+starting_basic_points = 90
+special_ability_name = "Iron Wall"
+special_ability_description = "Giảm 50% damage nhận vào trong 5s"
+ability_script_paths = Array[String](["res://Player/Scripts/Abilities/ClassAbilities/tank_heal_ability.gd"])
+ability_input_actions = Array[String](["ability_1"])
+passive_script_paths = Array[String](["res://Player/Scripts/Abilities/Passives/tank_regeneration.gd"])

@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://c7kxm5vp8qr1d"]
+
+[ext_resource type="Script" uid="uid://cyo0pqq7rgw" path="res://Player/Scripts/Projectiles/player_arrow.gd" id="1_arrow"]
+
+[sub_resource type="Gradient" id="Gradient_arrow"]
+colors = PackedColorArray(1, 0.9, 0.6, 1, 0.8, 0.5, 0.2, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_arrow"]
+gradient = SubResource("Gradient_arrow")
+width = 24
+height = 4
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_arrow"]
+size = Vector2(20, 4)
+
+[node name="PlayerArrow" type="Area2D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_arrow")
+speed = 450.0
+damage = 30.0
+lifetime = 4.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_arrow")
+offset = Vector2(-4, 0)
+
+[node name="ArrowHead" type="Polygon2D" parent="Sprite2D"]
+color = Color(0.9, 0.7, 0.3, 1)
+polygon = PackedVector2Array(8, 0, 2, -4, 2, 4)
+
+[node name="ArrowTail" type="Polygon2D" parent="Sprite2D"]
+color = Color(0.6, 0.4, 0.2, 1)
+polygon = PackedVector2Array(-16, 0, -20, -3, -18, 0, -20, 3)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_arrow")

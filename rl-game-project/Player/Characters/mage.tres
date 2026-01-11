@@ -1,27 +1,28 @@
-[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CharacterData" load_steps=3 format=3 uid="uid://d3gtdpeamfn2e"]
 
-[ext_resource type="Script" path="res://Player/Scripts/character_data.gd" id="1_mage"]
+[ext_resource type="Script" uid="uid://brjyjpsr317hn" path="res://Player/Scripts/character_data.gd" id="1_mage"]
+[ext_resource type="Texture2D" uid="uid://chxepi0rj67pn" path="res://Player/Characters/Portraits/leaf_ranger.png" id="2_portrait"]
 
 [resource]
 script = ExtResource("1_mage")
-character_id = "mage"
-character_name = "Mage"
-description = "Pháp sư cân bằng với chút may mắn.
-Khởi đầu với 2 VIT, 3 DEX, 2 MOV và 3 LCK.
-Phù hợp cho lối chơi balanced và drop rate cao."
-character_portrait = null
-sprite_frames = null
-starting_strength = 0
-starting_vitality = 2
-starting_dexterity = 3
-starting_movement_speed = 2
-starting_luck = 3
-starting_basic_points = 90
-starting_special_points = 3
-special_ability_name = "Arcane Surge"
-special_ability_description = "Tăng 30% attack speed trong 8s"
-damage_modifier = 1.0
-health_modifier = 1.0
-speed_modifier = 1.0
-player_scene_path = "res://Player/Scenes/player_mage.tscn"
+character_id = "archer"
+character_name = "Archer"
+description = "Archer — Cung thủ linh hoạt chuyên tấn công tầm xa.
+Khởi đầu với 4 DEX, 2 VIT và 2 LCK.
+Combo attack bắn tên, hoàn thành combo tăng tốc độ đánh.
+Có 3 loại tên: Thường (150%), Nổ (80%), Độc (30%)."
+character_portrait = ExtResource("2_portrait")
+player_scene_path = "res://Player/Scenes/player_archer.tscn"
 game_scene_path = "res://playground.tscn"
+starting_vitality = 2
+starting_dexterity = 4
+starting_movement_speed = 3
+starting_luck = 2
+starting_basic_points = 91
+special_ability_name = "Arrow Switch"
+special_ability_description = "Chuyển đổi loại tên: Thường (150% dam), Nổ (80% + AoE/bẫy), Độc (30% + DoT stack)"
+ability_script_paths = Array[String](["res://Player/Scripts/Abilities/ClassAbilities/archer_piercing_shot.gd"])
+ability_input_actions = Array[String](["ability_1"])
+passive_script_paths = Array[String](["res://Player/Scripts/Abilities/Passives/archer_crit_passive.gd"])
+projectile_scene_path = "res://Player/Scenes/Projectiles/normal_arrow.tscn"
+is_ranged_character = true

@@ -1,6 +1,6 @@
 ## PlayerRuntimeStats - Quản lý stats runtime (health, cooldowns)
 ## Tách biệt khỏi base stats để dễ reset mỗi run/respawn
-## NOTE: Buff/Debuff system sẽ được làm riêng sau
+## Includes modifier system for temporary buffs/debuffs
 class_name PlayerRuntimeStats
 extends Node
 
@@ -8,9 +8,18 @@ extends Node
 signal health_changed(current: float, max_value: float)
 signal health_depleted
 signal cooldown_ready(ability_name: String)
+signal modifier_added(modifier_id: String, type: String)
+signal modifier_removed(modifier_id: String, type: String)
 
 # === REFERENCES ===
 var stats: PlayerStats  # Reference tới base stats
+
+# === MODIFIERS (Buffs/Debuffs) ===
+var damage_modifiers: Dictionary = {}  # ID -> multiplier value
+var attack_speed_modifiers: Dictionary = {}
+var movement_speed_modifiers: Dictionary = {}
+var cooldown_reduction_modifiers: Dictionary = {}
+var defense_modifiers: Dictionary = {}
 
 # === HEALTH ===
 var current_health: float = 30.0:
@@ -176,20 +185,95 @@ func reset_all_cooldowns() -> void:
 # === STAT GETTERS ===
 
 func get_move_speed() -> float:
-	"""Lấy move speed từ base stats"""
-	return stats.move_speed if stats else 200.0
+	"""Lấy move speed từ base stats với modifiers"""
+	var base_speed = stats.move_speed if stats else 200.0
+	var modifier_sum = _sum_modifiers(movement_speed_modifiers)
+	return base_speed * (1.0 + modifier_sum)
 
 func get_dash_speed() -> float:
 	"""Lấy dash speed từ base stats"""
 	return stats.dash_speed if stats else 400.0
 
 func get_attack_speed_multiplier() -> float:
-	"""Lấy attack speed multiplier từ base stats"""
-	return stats.attack_speed_multiplier if stats else 1.0
+	"""Lấy attack speed multiplier từ base stats với modifiers"""
+	var base_speed = stats.attack_speed_multiplier if stats else 1.0
+	var modifier_sum = _sum_modifiers(attack_speed_modifiers)
+	return base_speed * (1.0 + modifier_sum)
 
 func calculate_damage() -> float:
-	"""Tính damage gây ra (có tính crit)"""
-	return stats.calculate_damage_dealt() if stats else 10.0
+	"""Tính damage gây ra (có tính crit và modifiers)"""
+	var base_dmg = stats.calculate_damage_dealt() if stats else 10.0
+	
+	# Apply damage modifiers
+	var modifier_sum = _sum_modifiers(damage_modifiers)
+	return base_dmg * (1.0 + modifier_sum)
+
+# === MODIFIERS SYSTEM ===
+
+func add_damage_modifier(modifier_id: String, value: float) -> void:
+	"""Add damage modifier (0.5 = +50% damage)"""
+	damage_modifiers[modifier_id] = value
+	modifier_added.emit(modifier_id, "damage")
+
+func remove_damage_modifier(modifier_id: String) -> void:
+	"""Remove damage modifier"""
+	if damage_modifiers.erase(modifier_id):
+		modifier_removed.emit(modifier_id, "damage")
+
+func add_attack_speed_modifier(modifier_id: String, value: float) -> void:
+	"""Add attack speed modifier (0.3 = +30% attack speed)"""
+	attack_speed_modifiers[modifier_id] = value
+	modifier_added.emit(modifier_id, "attack_speed")
+
+func remove_attack_speed_modifier(modifier_id: String) -> void:
+	"""Remove attack speed modifier"""
+	if attack_speed_modifiers.erase(modifier_id):
+		modifier_removed.emit(modifier_id, "attack_speed")
+
+func add_movement_speed_modifier(modifier_id: String, value: float) -> void:
+	"""Add movement speed modifier (0.5 = +50% move speed)"""
+	movement_speed_modifiers[modifier_id] = value
+	modifier_added.emit(modifier_id, "movement_speed")
+
+func remove_movement_speed_modifier(modifier_id: String) -> void:
+	"""Remove movement speed modifier"""
+	if movement_speed_modifiers.erase(modifier_id):
+		modifier_removed.emit(modifier_id, "movement_speed")
+
+func add_cooldown_reduction(modifier_id: String, value: float) -> void:
+	"""Add CDR modifier (0.2 = 20% CDR)"""
+	cooldown_reduction_modifiers[modifier_id] = value
+	modifier_added.emit(modifier_id, "cdr")
+
+func remove_cooldown_reduction(modifier_id: String) -> void:
+	"""Remove CDR modifier"""
+	if cooldown_reduction_modifiers.erase(modifier_id):
+		modifier_removed.emit(modifier_id, "cdr")
+
+func add_defense_modifier(modifier_id: String, value: float) -> void:
+	"""Add defense modifier (0.3 = +30% defense)"""
+	defense_modifiers[modifier_id] = value
+	modifier_added.emit(modifier_id, "defense")
+
+func remove_defense_modifier(modifier_id: String) -> void:
+	"""Remove defense modifier"""
+	if defense_modifiers.erase(modifier_id):
+		modifier_removed.emit(modifier_id, "defense")
+
+func _sum_modifiers(modifier_dict: Dictionary) -> float:
+	"""Sum all modifiers in a dictionary"""
+	var total = 0.0
+	for value in modifier_dict.values():
+		total += value
+	return total
+
+func clear_all_modifiers() -> void:
+	"""Clear all temporary modifiers"""
+	damage_modifiers.clear()
+	attack_speed_modifiers.clear()
+	movement_speed_modifiers.clear()
+	cooldown_reduction_modifiers.clear()
+	defense_modifiers.clear()
 
 # === SIGNAL HANDLERS ===
 

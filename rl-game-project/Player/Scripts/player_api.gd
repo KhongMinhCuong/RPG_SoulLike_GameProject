@@ -30,6 +30,9 @@ signal hit_taken(amount: float)
 ## Special attack properties
 @export var invincible_during_special: bool = false  # Nhân vật bất tử khi dùng sp_atk
 
+## Ranged Character Flag
+@export var is_ranged_character: bool = false  # True = spawn projectile, False = melee hitbox
+
 ## Direction tracking
 var pre_dir: int = 1  # Previous/pending direction from input
 
@@ -89,8 +92,30 @@ var _allow_hitbox_activation: bool = false
 func enable_hitbox_shape(shape_index: int) -> void:
 	"""Enable specific hitbox shape - callable from AnimationPlayer method tracks"""
 	# Only enable if attack is still valid (not interrupted)
-	if hitbox and _allow_hitbox_activation:
-		hitbox.enable_shape(shape_index)
+	if not _allow_hitbox_activation:
+		print("[Player] enable_hitbox_shape blocked: _allow_hitbox_activation = false")
+		return
+	
+	# For ranged characters, spawn projectile instead of enabling hitbox
+	if is_ranged_character:
+		print("[Player] Ranged character - spawning projectile instead of hitbox")
+		_spawn_projectile_from_hitbox()
+	else:
+		# Melee: enable hitbox as normal
+		if hitbox:
+			hitbox.enable_shape(shape_index)
+
+func _spawn_projectile_from_hitbox() -> void:
+	"""Spawn projectile for ranged character - called from enable_hitbox_shape"""
+	var spawner = get_node_or_null("ProjectileSpawner")
+	if spawner:
+		print("[Player] ProjectileSpawner found, spawning...")
+		if spawner.has_method("spawn_combo_arrow"):
+			spawner.spawn_combo_arrow()
+		elif spawner.has_method("spawn_facing_projectile"):
+			spawner.spawn_facing_projectile()
+	else:
+		push_warning("[Player] ProjectileSpawner not found!")
 
 func disable_all_hitboxes() -> void:
 	"""Disable all hitboxes - callable from AnimationPlayer method tracks"""
@@ -101,6 +126,14 @@ func play_sprite_animation(anim_name: StringName) -> void:
 	"""Play sprite animation - callable from AnimationPlayer"""
 	if animated_sprite:
 		animated_sprite.play(anim_name)
+		# Apply attack speed multiplier for attack animations
+		if runtime_stats and (anim_name.contains("atk") or anim_name.contains("attack")):
+			var speed_mult = runtime_stats.get_attack_speed_multiplier()
+			animation_player.speed_scale = speed_mult
+		else:
+			# Reset speed for non-attack animations
+			if animation_player:
+				animation_player.speed_scale = 1.0
 
 # === PRIVATE VARIABLES ===
 # Token system để invalidate async paths
@@ -220,9 +253,13 @@ func play_animation(anim_name: StringName, force: bool = false) -> void:
 		animated_sprite.play(anim_name)
 	
 	# Apply attack speed multiplier for attack animations
-	if runtime_stats and (anim_name.contains("attack") or anim_name.contains("slash")):
+	# Animation names: 1_atk, 2_atk, 3_atk, air_atk, etc.
+	if runtime_stats and (anim_name.contains("atk") or anim_name.contains("attack") or anim_name.contains("slash")):
 		var speed_mult = runtime_stats.get_attack_speed_multiplier()
 		animated_sprite.speed_scale = speed_mult
+	else:
+		# Reset speed for non-attack animations
+		animated_sprite.speed_scale = 1.0
 
 # === ACTION TOKEN SYSTEM ===
 # Token được increment mỗi khi start/interrupt action

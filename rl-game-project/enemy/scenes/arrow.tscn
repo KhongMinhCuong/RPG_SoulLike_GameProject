@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://dvs3vfjvond1k"]
+
+[ext_resource type="Texture2D" uid="uid://b0mlym5y6nl3u" path="res://enemy/assets/Huntress/Huntress 2/Sprites/Arrow/Static.png" id="1_8x43j"]
+[ext_resource type="Script" uid="uid://prsrjd5xwfrm" path="res://enemy/scripts/handle_damage/hitbox.gd" id="2_4iedk"]
+[ext_resource type="Script" uid="uid://b4iefka515w3x" path="res://enemy/scripts/projectile/arrow.gd" id="2_ih1mr"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ewxom"]
+atlas = ExtResource("1_8x43j")
+region = Rect2(0, 0, 24, 5)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_mvmsa"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ewxom")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ih1mr"]
+radius = 2.0
+
+[node name="Arrow" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_mvmsa")
+offset = Vector2(-8.965, 0)
+script = ExtResource("2_ih1mr")
+
+[node name="Hitbox" type="Area2D" parent="."]
+script = ExtResource("2_4iedk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CircleShape2D_ih1mr")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

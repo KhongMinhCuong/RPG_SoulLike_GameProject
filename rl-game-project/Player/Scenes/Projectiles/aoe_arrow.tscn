@@ -1,0 +1,50 @@
+[gd_scene load_steps=5 format=3 uid="uid://daoe8km4qr3fp"]
+
+[ext_resource type="Script" path="res://Player/Scripts/Projectiles/aoe_arrow.gd" id="1_aoe"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_aoe"]
+size = Vector2(26, 6)
+
+[sub_resource type="Gradient" id="Gradient_aoe"]
+colors = PackedColorArray(1, 0.6, 0.2, 1, 0.9, 0.3, 0.1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_aoe"]
+gradient = SubResource("Gradient_aoe")
+width = 30
+height = 6
+
+[node name="AOEArrow" type="Area2D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_aoe")
+speed = 450.0
+damage = 24.0
+lifetime = 5.0
+explosion_radius = 80.0
+explosion_damage_percent = 0.8
+trap_duration = 3.0
+trap_damage_percent = 0.5
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_aoe")
+offset = Vector2(-4, 0)
+
+[node name="ArrowHead" type="Polygon2D" parent="Sprite2D"]
+color = Color(1, 0.5, 0.1, 1)
+polygon = PackedVector2Array(12, 0, 4, -6, 4, 6)
+
+[node name="ExplosiveCore" type="Polygon2D" parent="Sprite2D"]
+color = Color(1, 0.3, 0, 1)
+polygon = PackedVector2Array(-2, -3, 6, 0, -2, 3, -6, 0)
+
+[node name="ArrowTail" type="Polygon2D" parent="Sprite2D"]
+color = Color(0.5, 0.3, 0.1, 1)
+polygon = PackedVector2Array(-18, 0, -24, -4, -20, 0, -24, 4)
+
+[node name="GlowEffect" type="PointLight2D" parent="Sprite2D"]
+color = Color(1, 0.5, 0.1, 0.6)
+energy = 0.6
+texture_scale = 0.25
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_aoe")

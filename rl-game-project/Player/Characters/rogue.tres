@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CharacterData" load_steps=3 format=3 uid="uid://bvari4x1uflvy"]
 
-[ext_resource type="Script" path="res://Player/Scripts/character_data.gd" id="1_rogue"]
+[ext_resource type="Script" uid="uid://brjyjpsr317hn" path="res://Player/Scripts/character_data.gd" id="1_rogue"]
+[ext_resource type="Texture2D" uid="uid://dnfj30ye86c8e" path="res://Player/Characters/Portraits/metal_bladekeeper.png" id="2_portrait"]
 
 [resource]
 script = ExtResource("1_rogue")
@@ -9,19 +10,15 @@ character_name = "Rogue"
 description = "Sát thủ nhanh nhẹn với tốc độ và chí mạng cao.
 Khởi đầu với 5 DEX, 5 MOV và 2 LCK.
 Phù hợp cho lối chơi né tránh và crit."
-character_portrait = null
-sprite_frames = null
-starting_strength = 0
-starting_vitality = 0
+character_portrait = ExtResource("2_portrait")
+player_scene_path = "res://Player/Scenes/player_rogue.tscn"
+game_scene_path = "res://playground.tscn"
 starting_dexterity = 5
 starting_movement_speed = 5
 starting_luck = 2
 starting_basic_points = 88
-starting_special_points = 3
 special_ability_name = "Shadow Step"
 special_ability_description = "Dash nhanh không cooldown trong 3s"
-damage_modifier = 1.0
-health_modifier = 1.0
-speed_modifier = 1.0
-player_scene_path = "res://Player/Scenes/player_rogue.tscn"
-game_scene_path = "res://playground.tscn"
+ability_script_paths = Array[String](["res://Player/Scripts/Abilities/ClassAbilities/rogue_speed_boost.gd"])
+ability_input_actions = Array[String](["ability_1"])
+passive_script_paths = Array[String](["res://Player/Scripts/Abilities/Passives/rogue_dodge.gd"])
