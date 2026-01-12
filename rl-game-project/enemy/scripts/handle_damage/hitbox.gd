@@ -27,6 +27,10 @@ func _physics_process(delta: float) -> void:
 	scale.x = direction
 
 func enable():
+	# Refresh damage from owner in case stats changed after _ready
+	if owner_node and "damage" in owner_node:
+		damage = owner_node.damage
+
 	monitoring = true
 	monitorable = true
 	for shape in get_children():
@@ -35,6 +39,10 @@ func enable():
 
 func enable_shape(shape_index: int):
 	"""Enable only specific CollisionShape2D by index"""
+	# Refresh damage from owner whenever enabling specific hitbox shape
+	if owner_node and "damage" in owner_node:
+		damage = owner_node.damage
+
 	monitoring = true
 	monitorable = true
 	var shapes = get_children().filter(func(c): return c is CollisionShape2D)

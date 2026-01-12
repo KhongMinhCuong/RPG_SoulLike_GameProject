@@ -51,9 +51,16 @@ func handle_input(controller: PlayerController) -> void:
 			return
 		return
 	
-	# Consume parry và special input (không available trên không)
-	if controller.get_parry_input():
-		pass  # Ignore
-	
+	# === SPECIAL ATTACK (allowed in air) ===
 	if controller.get_special_input():
+		if player.can_special():
+			if player.runtime_stats and player.runtime_stats.can_use_ability("special"):
+				player.runtime_stats.use_ability("special")
+				get_parent().change_state("SpecialState")
+			else:
+				return
+		return
+	
+	# Consume parry input (không available trên không)
+	if controller.get_parry_input():
 		pass  # Ignore

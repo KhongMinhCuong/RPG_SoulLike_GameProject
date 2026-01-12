@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=3 format=3 uid="uid://djc74w1iaxvx4"]
+
+[ext_resource type="Script" uid="uid://brjyjpsr317hn" path="res://Player/Scripts/character_data.gd" id="1_warrior"]
+[ext_resource type="Texture2D" uid="uid://bitt5iu6yg74j" path="res://Player/Characters/Portraits/wind_hashashin.png" id="2_portrait"]
+
+[resource]
+script = ExtResource("1_warrior")
+description = "Chiến binh mạnh mẽ với sức tấn công cao.
+Khởi đầu với 5 STR và 3 VIT.
+Phù hợp cho lối chơi tấn công trực diện."
+character_portrait = ExtResource("2_portrait")
+player_scene_path = "res://Player/Scenes/player_warrior.tscn"
+game_scene_path = "res://playground.tscn"
+starting_strength = 5
+starting_vitality = 3
+starting_basic_points = 92
+special_ability_name = "Power Strike"
+special_ability_description = "Đòn đánh mạnh gây 150% damage"
+ability_script_paths = Array[String](["res://Player/Scripts/Abilities/ClassAbilities/warrior_damage_boost.gd"])
+ability_input_actions = Array[String](["ability_1"])
+passive_script_paths = Array[String](["res://Player/Scripts/Abilities/Passives/warrior_lifesteal.gd"])

@@ -7,6 +7,13 @@ class_name Player
 @onready var state_machine: PlayerStateMachine = $StateMachine
 @onready var controller: PlayerController = $Controller
 @onready var stats_ui: CanvasLayer = $UI/StatsUI  # Stats UI để hiển thị level/stats
+
+# AbilityManager - auto-created if not exists
+var ability_manager: Node = null
+
+# Loaded character data reference
+var character_data: Resource = null
+
 @export var direction: int
 
 func _ready() -> void:
@@ -15,6 +22,42 @@ func _ready() -> void:
 	if not base_stats:
 		base_stats = PlayerStats.new()
 		print("[Player] Created new PlayerStats")
+	
+	# Load character data từ GameManager (nếu đã chọn nhân vật)
+	# NOTE: GameManager phải được add vào Autoload trước (Project Settings → Autoload)
+	if has_node("/root/GameManager"):
+		var game_manager = get_node("/root/GameManager")
+		if game_manager.has_method("has_selected_character") and game_manager.has_selected_character():
+			character_data = game_manager.get_selected_character()
+			character_data.apply_to_stats(base_stats)
+			print("[Player] Loaded character: ", character_data.character_name)
+			
+			# Load ranged character flag
+			if "is_ranged_character" in character_data:
+				is_ranged_character = character_data.is_ranged_character
+				print("[Player] Is ranged: ", is_ranged_character)
+			
+			# Apply sprite frames nếu có
+			if character_data.sprite_frames and animated_sprite:
+				animated_sprite.sprite_frames = character_data.sprite_frames
+			
+			# Setup AbilityManager sau khi load character data
+			_setup_ability_manager()
+			
+			# Setup ProjectileSpawner cho ranged characters
+			if is_ranged_character:
+				_setup_projectile_spawner()
+		else:
+			# Fallback: Grant starter points nếu không có character data (debug mode)
+			print("[Player] No character selected - using debug mode")
+			base_stats.add_basic_stat_points(100)
+			base_stats.add_special_upgrade_points(3)
+	else:
+		# GameManager chưa được add vào Autoload - dùng debug mode
+		print("[Player] GameManager not found - using debug mode")
+		print("  → Add GameManager to Autoload: Project → Project Settings → Autoload")
+		base_stats.add_basic_stat_points(100)
+		base_stats.add_special_upgrade_points(3)
 	
 	# Initialize runtime stats
 	if runtime_stats:
@@ -62,8 +105,15 @@ func _physics_process(delta: float) -> void:
 	
 	# Update direction only when moving, preserve last direction when idle
 	var move_dir = sign(controller.get_move_direction().x) if controller else 0
+	
+	# Always track input direction
 	if move_dir != 0:
-		direction = move_dir
+		pre_dir = move_dir
+	
+	# Only update facing direction if not attacking
+	var is_attacking = current_action in [Action.ATTACK, Action.AIR_ATTACK, Action.SPECIAL]
+	if move_dir != 0 and not is_attacking:
+		direction = pre_dir
 	elif direction == 0:  # Initialize first time
 		direction = 1
 	
@@ -204,3 +254,45 @@ func _on_sp_atk_pressed() -> void:
 	"""Touch button special - set flag trong LocalController"""
 	if controller and controller is LocalController:
 		controller._special_pressed = true
+
+# === ABILITY MANAGER SETUP ===
+
+func _setup_ability_manager() -> void:
+	"""Tạo và setup AbilityManager để load abilities từ CharacterData"""
+	# Check if AbilityManager exists as child
+	ability_manager = get_node_or_null("AbilityManager")
+	
+	if not ability_manager:
+		# Create AbilityManager dynamically
+		var AbilityManagerScript = load("res://Player/Scripts/Abilities/ability_manager.gd")
+		if AbilityManagerScript:
+			ability_manager = Node.new()
+			ability_manager.name = "AbilityManager"
+			ability_manager.set_script(AbilityManagerScript)
+			add_child(ability_manager)
+			print("[Player] AbilityManager created dynamically")
+		else:
+			push_error("[Player] Could not load AbilityManager script!")
+			return
+	
+	print("[Player] AbilityManager ready: ", ability_manager.name)
+
+func get_character_data() -> Resource:
+	"""Return loaded character data for AbilityManager"""
+	return character_data
+
+# === PROJECTILE SPAWNER SETUP ===
+
+func _setup_projectile_spawner() -> void:
+	"""Load projectile scene từ CharacterData vào ProjectileSpawner"""
+	var spawner = get_node_or_null("ProjectileSpawner")
+	if not spawner:
+		push_warning("[Player] ProjectileSpawner not found! Add it to scene for ranged characters.")
+		return
+	
+	# Load default projectile scene từ CharacterData
+	if character_data and "projectile_scene_path" in character_data:
+		var path = character_data.projectile_scene_path
+		if path != "" and spawner.has_method("load_projectile_scene"):
+			spawner.load_projectile_scene(path)
+			print("[Player] Projectile scene loaded: ", path)

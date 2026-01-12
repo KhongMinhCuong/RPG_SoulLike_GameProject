@@ -1,0 +1,121 @@
+[gd_scene load_steps=6 format=3 uid="uid://cq4b33cmc5uu8"]
+
+[ext_resource type="Script" path="res://Scenes/character_selection.gd" id="1_script"]
+[ext_resource type="Resource" path="res://Player/Characters/mage.tres" id="2_3nbr6"]
+[ext_resource type="Resource" path="res://Player/Characters/rogue.tres" id="3_btth6"]
+[ext_resource type="Resource" path="res://Player/Characters/tank.tres" id="4_ov5p2"]
+[ext_resource type="Resource" path="res://Player/Characters/warrior.tres" id="5_u424w"]
+
+[node name="CharacterSelection" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+available_characters = Array[Resource]([ExtResource("2_3nbr6"), ExtResource("3_btth6"), ExtResource("4_ov5p2"), ExtResource("5_u424w")])
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.1, 0.15, 1)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -125.0
+offset_right = 230.0
+offset_bottom = 125.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 2
+
+[node name="TitleLabel" type="Label" parent="VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "SELECT CHARACTER"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBox"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="MainContent" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 5
+
+[node name="CharacterList" type="VBoxContainer" parent="VBox/MainContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.4
+
+[node name="VSeparator" type="VSeparator" parent="VBox/MainContent"]
+layout_mode = 2
+
+[node name="DetailPanel" type="PanelContainer" parent="VBox/MainContent"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBox/MainContent/DetailPanel"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="PortraitRect" type="TextureRect" parent="VBox/MainContent/DetailPanel/VBox"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="VBox/MainContent/DetailPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Character Name"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBox/MainContent/DetailPanel/VBox"]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="VBox/MainContent/DetailPanel/VBox"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+text = "Character description goes here.
+Multiple lines supported."
+autowrap_mode = 3
+clip_text = true
+
+[node name="HSeparator2" type="HSeparator" parent="VBox/MainContent/DetailPanel/VBox"]
+layout_mode = 2
+
+[node name="StatsLabel" type="Label" parent="VBox/MainContent/DetailPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 9
+text = "Starting Stats:
+STR: 0
+VIT: 0
+DEX: 0
+MOV: 0
+LCK: 0"
+
+[node name="HSeparator2" type="HSeparator" parent="VBox"]
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="VBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+disabled = true
+text = "▶ START GAME"

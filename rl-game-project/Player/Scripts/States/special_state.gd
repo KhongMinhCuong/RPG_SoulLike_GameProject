@@ -10,6 +10,9 @@ var special_token: int = 0
 func enter(_previous_state: PlayerState) -> void:
 	special_token = player._start_action(player.Action.SPECIAL)
 	
+	# Allow hitbox to deal damage during this attack
+	player._allow_hitbox_activation = true
+	
 	# Freeze hoàn toàn
 	player.velocity = Vector2.ZERO
 	
@@ -18,22 +21,34 @@ func enter(_previous_state: PlayerState) -> void:
 		player.hurtbox.monitoring = false
 		player.hurtbox.monitorable = false
 	
-	player.play_animation(&"sp_atk", true)
+	# Play animation via AnimationPlayer (controls hitbox via method tracks)
+	var anim_name = &"sp_atk"
 	
-	# Enable special attack hitbox (shape 4)
-	if player.hitbox:
-		player.hitbox.enable_shape(4)
+	if not player.animation_player or not player.animation_player.has_animation(anim_name):
+		push_error("AnimationPlayer animation '%s' not found! Create it with method tracks." % anim_name)
+		# Cleanup before exiting
+		player._allow_hitbox_activation = false
+		if player.invincible_during_special and player.hurtbox:
+			player.hurtbox.monitoring = true
+			player.hurtbox.monitorable = true
+		player._end_action(special_token)
+		# Immediately transition back
+		if player.is_on_floor():
+			get_parent().change_state("GroundedState")
+		else:
+			get_parent().change_state("AirState")
+		return
 	
-	await player.animated_sprite.animation_finished
+	player.animation_player.play(anim_name)
+	await player.animation_player.animation_finished
 	
 	if special_token != player._action_token:
 		return  # Bị interrupt
 	
 	player._end_action(special_token)
 	
-	# Disable hitbox
-	if player.hitbox:
-		player.hitbox.disable()
+	# Prevent further damage from this attack
+	player._allow_hitbox_activation = false
 	
 	# Re-enable hurtbox if it was disabled
 	if player.invincible_during_special and player.hurtbox:
