@@ -43,3 +43,10 @@ func _on_area_entered(hitbox: Hitbox) -> void:
 		if hitbox.owner_node and hitbox.owner_node.has_method("take_damage"):
 			# Pass is_parry=true to trigger extended stun duration
 			hitbox.owner_node.take_damage(0, true)
+
+func disable():
+	monitoring = false
+	monitorable = false
+	for shape in get_children():
+		if shape is CollisionShape2D:
+			shape.disabled = true
