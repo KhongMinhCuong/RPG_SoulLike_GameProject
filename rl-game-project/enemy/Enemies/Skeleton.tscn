@@ -337,9 +337,9 @@ script = ExtResource("1_ygee8")
 chase_range = 200.0
 
 [node name="Health" parent="." instance=ExtResource("8_and3r")]
-offset_left = -12.0
-offset_top = -34.0
-offset_right = 24.0
+offset_left = -7.0
+offset_top = -32.0
+offset_right = 20.0
 offset_bottom = -29.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
