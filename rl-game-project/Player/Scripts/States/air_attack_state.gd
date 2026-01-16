@@ -53,6 +53,8 @@ func enter(_previous_state: PlayerState) -> void:
 	# Reset animation speed
 	if player.animation_player:
 		player.animation_player.speed_scale = 1.0
+	if player.animated_sprite:
+		player.animated_sprite.speed_scale = 1.0
 	
 	if attack_token != player._action_token:
 		return  # Bị interrupt

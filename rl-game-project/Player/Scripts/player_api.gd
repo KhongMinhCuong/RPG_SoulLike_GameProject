@@ -1,6 +1,7 @@
 ## Base class cho Player - cung cấp API và data cho các State
 ## Không xử lý logic game trực tiếp, chỉ expose methods và properties
 extends CharacterBody2D
+class_name PlayerAPI
 
 # === SIGNALS ===
 signal health_changed(current: float, max_value: float)
@@ -98,24 +99,76 @@ func enable_hitbox_shape(shape_index: int) -> void:
 	
 	# For ranged characters, spawn projectile instead of enabling hitbox
 	if is_ranged_character:
-		print("[Player] Ranged character - spawning projectile instead of hitbox")
-		_spawn_projectile_from_hitbox()
+		# Shape 4 = special attack laser (không spawn projectile, dùng hitbox)
+		if shape_index == 4:
+			print("[Player] Special attack - using hitbox and spawning laser visual")
+			_spawn_laser_visual()
+			# Enable hitbox như melee
+			if hitbox:
+				hitbox.enable_shape(shape_index)
+		else:
+			print("[Player] Ranged character - spawning projectile instead of hitbox")
+			_spawn_projectile_from_hitbox(shape_index)
 	else:
 		# Melee: enable hitbox as normal
 		if hitbox:
 			hitbox.enable_shape(shape_index)
 
-func _spawn_projectile_from_hitbox() -> void:
-	"""Spawn projectile for ranged character - called from enable_hitbox_shape"""
+func _spawn_projectile_from_hitbox(shape_index: int = -1) -> void:
+	"""Spawn projectile for ranged character - called from enable_hitbox_shape
+	shape_index 3 = air attack (bắn chéo), còn lại = combo attack thường"""
 	var spawner = get_node_or_null("ProjectileSpawner")
 	if spawner:
 		print("[Player] ProjectileSpawner found, spawning...")
-		if spawner.has_method("spawn_combo_arrow"):
+		
+		# Air attack (shape_index 3) sử dụng góc -45 độ và spawn từ hitbox 3
+		if shape_index == 3 and spawner.has_method("spawn_air_attack_arrow"):
+			spawner.spawn_air_attack_arrow(shape_index)
+		elif spawner.has_method("spawn_combo_arrow"):
 			spawner.spawn_combo_arrow()
 		elif spawner.has_method("spawn_facing_projectile"):
 			spawner.spawn_facing_projectile()
 	else:
 		push_warning("[Player] ProjectileSpawner not found!")
+
+func _spawn_laser_visual() -> void:
+	"""Spawn laser visual effect for archer special attack"""
+	# Thử load scene mới trước, fallback về scene cũ
+	var laser_scene = load("res://Player/Scenes/Projectiles/archer_laser_effect.tscn")
+	if not laser_scene:
+		laser_scene = load("res://Player/Scenes/Projectiles/archer_laser_beam.tscn")
+	
+	if not laser_scene:
+		push_warning("[Player] Laser effect scene not found!")
+		return
+	
+	var laser = laser_scene.instantiate()
+	
+	# Position laser tại center của hitbox shape cho special attack (Hitbox5 - index 4)
+	var spawn_pos = global_position + Vector2(0, -27.5)  # Default offset
+	
+	# Tìm hitbox center cho laser (Hitbox5 cho special attack)
+	if hitbox:
+		var dir_sign = 1.0 if self.direction >= 0 else -1.0
+		var children = hitbox.get_children()
+		# Hitbox5 là child thứ 5 (index 4) cho special attack laser
+		var laser_hitbox_index = 4  
+		if children.size() > laser_hitbox_index and children[laser_hitbox_index] is CollisionShape2D:
+			var hitbox_shape: CollisionShape2D = children[laser_hitbox_index]
+			var shape_pos = hitbox_shape.position
+			# Tính center của laser: global_pos + (hitbox_x * direction_sign, hitbox_y)
+			spawn_pos = global_position + Vector2(abs(shape_pos.x) * dir_sign, shape_pos.y)
+			print("[Player] Using Hitbox5 position: %s, spawn_pos: %s" % [shape_pos, spawn_pos])
+	
+	laser.global_position = spawn_pos
+	
+	# Set direction của laser theo hướng player
+	if laser.has_method("set_direction"):
+		laser.set_direction(self.direction)
+	
+	# Add to scene
+	get_tree().current_scene.add_child(laser)
+	print("[Player] Spawned laser visual effect at hitbox center: %s" % spawn_pos)
 
 func disable_all_hitboxes() -> void:
 	"""Disable all hitboxes - callable from AnimationPlayer method tracks"""
@@ -129,11 +182,15 @@ func play_sprite_animation(anim_name: StringName) -> void:
 		# Apply attack speed multiplier for attack animations
 		if runtime_stats and (anim_name.contains("atk") or anim_name.contains("attack")):
 			var speed_mult = runtime_stats.get_attack_speed_multiplier()
-			animation_player.speed_scale = speed_mult
+			# Apply speed to BOTH animation_player and animated_sprite
+			if animation_player:
+				animation_player.speed_scale = speed_mult
+			animated_sprite.speed_scale = speed_mult
 		else:
 			# Reset speed for non-attack animations
 			if animation_player:
 				animation_player.speed_scale = 1.0
+			animated_sprite.speed_scale = 1.0
 
 # === PRIVATE VARIABLES ===
 # Token system để invalidate async paths

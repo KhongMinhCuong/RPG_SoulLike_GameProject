@@ -83,8 +83,8 @@ func _execute_attack() -> void:
 	player._combo_accepting_buffer = true
 	player._combo_window_timer = player.combo_window
 	
-	# Wait cho main animation kết thúc
-	await player.animated_sprite.animation_finished
+	# Wait cho main animation kết thúc (AnimationPlayer controls the flow)
+	await player.animation_player.animation_finished
 	
 	if attack_token != player._action_token:
 		return  # Bị interrupt
@@ -106,9 +106,13 @@ func _execute_attack() -> void:
 	var end_anim: StringName = current_data.get("end_anim", &"") as StringName
 	
 	if end_anim != &"":
-		player.play_animation(end_anim, true)
-		# Window vẫn open - có thể dash cancel end animation!
-		await player.animated_sprite.animation_finished
+		# Check nếu có trong AnimationPlayer (ưu tiên) hoặc AnimatedSprite
+		if player.animation_player and player.animation_player.has_animation(end_anim):
+			player.animation_player.play(end_anim)
+			await player.animation_player.animation_finished
+		else:
+			player.play_animation(end_anim, true)
+			await player.animated_sprite.animation_finished
 		if attack_token != player._action_token:
 			return
 	else:
@@ -174,6 +178,8 @@ func exit(_next_state: PlayerState) -> void:
 	# Reset animation speed when exiting attack state
 	if player.animation_player:
 		player.animation_player.speed_scale = 1.0
+	if player.animated_sprite:
+		player.animated_sprite.speed_scale = 1.0
 	# Combo timer được update ở player._physics_process
 
 ## Spawn projectile cho ranged attack

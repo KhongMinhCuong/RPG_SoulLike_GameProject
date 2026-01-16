@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://cq4b33cmc5uu8"]
 
 [ext_resource type="Script" path="res://Scenes/character_selection.gd" id="1_script"]
-[ext_resource type="Resource" path="res://Player/Characters/mage.tres" id="2_3nbr6"]
+[ext_resource type="Resource" path="res://Player/Characters/archer.tres" id="2_3nbr6"]
 [ext_resource type="Resource" path="res://Player/Characters/rogue.tres" id="3_btth6"]
 [ext_resource type="Resource" path="res://Player/Characters/tank.tres" id="4_ov5p2"]
 [ext_resource type="Resource" path="res://Player/Characters/warrior.tres" id="5_u424w"]

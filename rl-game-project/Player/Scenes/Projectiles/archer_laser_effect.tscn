@@ -1,0 +1,37 @@
+[gd_scene load_steps=8 format=3 uid="uid://bcjqqgr0tv0mg"]
+
+[ext_resource type="Script" uid="uid://cvjdklyaatl76" path="res://Player/Scripts/Projectiles/archer_laser_effect.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://7y1qus02a1s1" path="res://Player/Sprites/Elementals_Leaf_ranger_Free_v1.0/animations/PNG/projectiles_and_effects/beam_extension_effect/beam_extension_effect_1.png" id="2_7atd5"]
+[ext_resource type="Texture2D" uid="uid://dxb41edx8fa7q" path="res://Player/Sprites/Elementals_Leaf_ranger_Free_v1.0/animations/PNG/projectiles_and_effects/beam_extension_effect/beam_extension_effect_2.png" id="3_j0rcf"]
+[ext_resource type="Texture2D" uid="uid://dqpiwq1hoy7mt" path="res://Player/Sprites/Elementals_Leaf_ranger_Free_v1.0/animations/PNG/projectiles_and_effects/beam_extension_effect/beam_extension_effect_3.png" id="4_tyyij"]
+[ext_resource type="Texture2D" uid="uid://dkdfvhy0svl7a" path="res://Player/Sprites/Elementals_Leaf_ranger_Free_v1.0/animations/PNG/projectiles_and_effects/beam_extension_effect/beam_extension_effect_4.png" id="5_fyuw4"]
+[ext_resource type="Texture2D" uid="uid://t33g4cvgmult" path="res://Player/Sprites/Elementals_Leaf_ranger_Free_v1.0/animations/PNG/projectiles_and_effects/beam_extension_effect/beam_extension_effect_5.png" id="6_p0eis"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_laser"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_7atd5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_j0rcf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_tyyij")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_fyuw4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_p0eis")
+}],
+"loop": false,
+"name": &"default",
+"speed": 12.0
+}]
+
+[node name="ArcherLaserEffect" type="Node2D"]
+script = ExtResource("1")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_laser")

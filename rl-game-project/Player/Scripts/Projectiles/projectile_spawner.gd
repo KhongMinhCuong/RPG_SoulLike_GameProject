@@ -28,22 +28,23 @@ func _ready() -> void:
 	
 	if not player:
 		push_error("[ProjectileSpawner] Player not found at path: %s" % player_path)
-	
-	# Find arrow switch ability
-	_find_arrow_switch_ability()
 
 func _find_arrow_switch_ability() -> void:
-	"""Tìm ArcherArrowSwitch ability nếu có"""
+	"""Tìm ArcherArrowSwitch ability nếu có - gọi lazy khi cần"""
+	if arrow_switch_ability:
+		return  # Already found
+	
+	if not player:
+		player = get_node_or_null(player_path)
+	
 	if not player or not player.has_node("AbilityManager"):
 		return
-	
-	await get_tree().process_frame  # Wait for AbilityManager to initialize
 	
 	var ability_mgr = player.get_node("AbilityManager")
 	for ability in ability_mgr.abilities.values():
 		if ability.ability_name == "Arrow Switch":
 			arrow_switch_ability = ability
-			print("[ProjectileSpawner] Found Arrow Switch ability")
+			print("[ProjectileSpawner] Found Arrow Switch ability!")
 			break
 
 ## Load projectile scene từ path
@@ -82,6 +83,9 @@ func _get_spawn_position(direction: Vector2) -> Vector2:
 
 ## Get current projectile scene (priority: arrow_switch > cached > default)
 func _get_current_scene() -> PackedScene:
+	# Lazy find arrow switch ability
+	_find_arrow_switch_ability()
+	
 	# Priority 1: Arrow Switch ability
 	if arrow_switch_ability and arrow_switch_ability.has_method("get_current_arrow_scene"):
 		var scene = arrow_switch_ability.get_current_arrow_scene()
@@ -97,6 +101,9 @@ func _get_current_scene() -> PackedScene:
 
 ## Get current damage multiplier from Arrow Switch
 func _get_damage_multiplier() -> float:
+	# Lazy find arrow switch ability
+	_find_arrow_switch_ability()
+	
 	if arrow_switch_ability and arrow_switch_ability.has_method("get_current_damage_multiplier"):
 		return arrow_switch_ability.get_current_damage_multiplier()
 	return 1.0
@@ -116,13 +123,14 @@ func spawn_projectile(direction: Vector2 = Vector2.RIGHT, custom_damage: float =
 	# Instantiate projectile
 	var projectile = scene_to_use.instantiate()
 	
-	# Calculate damage
+	# Calculate damage - lấy từ base_stats.base_damage (đã bao gồm upgrades)
 	var base_damage = default_damage
 	if player.base_stats:
 		base_damage = player.base_stats.base_damage
 	
 	var damage_mult = _get_damage_multiplier()
 	var final_damage = custom_damage if custom_damage > 0 else (base_damage * damage_mult)
+	print("[ProjectileSpawner] base_damage=%.1f, mult=%.2f, final=%.1f" % [base_damage, damage_mult, final_damage])
 	
 	# Setup projectile
 	if projectile.has_method("setup"):
@@ -159,6 +167,87 @@ func spawn_facing_projectile(custom_damage: float = -1.0) -> Node:
 func spawn_combo_arrow() -> Node:
 	"""Spawn arrow cho combo attack, sử dụng hitbox center"""
 	return spawn_facing_projectile()
+
+## Spawn arrow cho air attack (bắn chéo xuống 45 độ)
+func spawn_air_attack_arrow(shape_index: int = -1) -> Node:
+	"""Spawn arrow cho air attack với góc 45 độ xuống dưới, spawn từ hitbox center"""
+	var base_direction = Vector2.RIGHT
+	var facing_right = true
+	
+	# Get horizontal direction from player
+	if player and "direction" in player:
+		facing_right = player.direction >= 0
+		base_direction = Vector2.RIGHT if facing_right else Vector2.LEFT
+	elif player and player.has_node("Sprite2D"):
+		var sprite = player.get_node("Sprite2D")
+		facing_right = not sprite.flip_h
+		base_direction = Vector2.LEFT if sprite.flip_h else Vector2.RIGHT
+	
+	# Rotate 45 degrees DOWN
+	# Hướng phải: rotate +45độ (xuống dưới bên phải)
+	# Hướng trái: rotate -45độ (xuống dưới bên trái)
+	var angle = 45.0 if facing_right else -45.0
+	var air_direction = base_direction.rotated(deg_to_rad(angle))
+	
+	# Override spawn position nếu shape_index được cung cấp (spawn từ air attack hitbox)
+	if shape_index >= 0:
+		return _spawn_from_hitbox_shape(air_direction, shape_index)
+	else:
+		return spawn_projectile(air_direction)
+
+## Spawn projectile từ vị trí của hitbox shape cụ thể
+func _spawn_from_hitbox_shape(direction: Vector2, shape_index: int, custom_damage: float = -1.0) -> Node:
+	"""Spawn projectile từ center của hitbox shape được chỉ định"""
+	var scene_to_use = _get_current_scene()
+	
+	if not scene_to_use:
+		push_error("[ProjectileSpawner] No projectile scene assigned!")
+		return null
+	
+	if not player:
+		push_error("[ProjectileSpawner] Player reference missing!")
+		return null
+	
+	# Instantiate projectile
+	var projectile = scene_to_use.instantiate()
+	
+	# Calculate damage
+	var base_damage = default_damage
+	if player.base_stats:
+		base_damage = player.base_stats.base_damage
+	
+	var damage_mult = _get_damage_multiplier()
+	var final_damage = custom_damage if custom_damage > 0 else (base_damage * damage_mult)
+	
+	# Setup projectile
+	if projectile.has_method("setup"):
+		projectile.setup(direction, player, final_damage)
+	else:
+		projectile.direction = direction
+		projectile.owner_player = player
+		projectile.damage = final_damage
+	
+	# Get spawn position từ hitbox shape cụ thể
+	var spawn_pos = player.global_position + Vector2(0, -25)  # Default fallback
+	
+	if hitbox:
+		var dir_sign = 1.0 if direction.x >= 0 else -1.0
+		var children = hitbox.get_children()
+		
+		if shape_index < children.size() and children[shape_index] is CollisionShape2D:
+			var hitbox_shape: CollisionShape2D = children[shape_index]
+			var shape_pos = hitbox_shape.position
+			# Tính center của hitbox: global_pos + (hitbox_x * direction_sign, hitbox_y)
+			spawn_pos = player.global_position + Vector2(abs(shape_pos.x) * dir_sign, shape_pos.y)
+			print("[ProjectileSpawner] Using Hitbox%d position: %s, spawn_pos: %s" % [shape_index + 1, shape_pos, spawn_pos])
+	
+	projectile.global_position = spawn_pos
+	
+	# Add to scene
+	player.get_tree().current_scene.add_child(projectile)
+	
+	print("[ProjectileSpawner] Spawned air attack arrow at: %s, damage: %.1f" % [spawn_pos, final_damage])
+	return projectile
 
 ## Spawn multiple projectiles (spread shot)
 func spawn_spread(count: int = 3, spread_angle: float = 15.0, custom_damage: float = -1.0) -> Array:

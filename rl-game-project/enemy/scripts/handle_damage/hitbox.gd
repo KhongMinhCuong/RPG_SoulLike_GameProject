@@ -22,9 +22,11 @@ func _ready() -> void:
 		if shape is CollisionShape2D:
 			shape.disabled = true
 
-func _physics_process(delta: float) -> void:
-	direction = owner_node.direction
-	scale.x = direction
+func _physics_process(_delta: float) -> void:
+	# Chỉ update direction nếu owner_node có property direction
+	if owner_node and "direction" in owner_node:
+		direction = owner_node.direction
+		scale.x = direction
 
 func enable():
 	# Refresh damage from owner in case stats changed after _ready

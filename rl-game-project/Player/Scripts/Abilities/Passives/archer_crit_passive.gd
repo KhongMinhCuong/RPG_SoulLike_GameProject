@@ -51,9 +51,16 @@ func on_combo_completed() -> void:
 
 func _update_attack_speed() -> void:
 	"""Cập nhật attack speed cho player"""
-	if player and player.runtime_stats:
-		var multiplier = get_attack_speed_multiplier()
-		player.runtime_stats.attack_speed_multiplier = multiplier
+	if not player or not player.runtime_stats:
+		return
+	
+	# Tính toán bonus speed từ stacks
+	var speed_bonus = current_stacks * speed_bonus_per_stack
+	
+	# Update modifier (remove old, add new)
+	player.runtime_stats.remove_attack_speed_modifier("rapid_fire")
+	if speed_bonus > 0.0:
+		player.runtime_stats.add_attack_speed_modifier("rapid_fire", speed_bonus)
 
 func get_attack_speed_multiplier() -> float:
 	"""Trả về attack speed multiplier hiện tại"""

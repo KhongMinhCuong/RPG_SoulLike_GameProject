@@ -17,7 +17,7 @@ const ARROW_PATHS: Dictionary = {
 
 # === DAMAGE MULTIPLIERS ===
 const DAMAGE_MULTIPLIERS: Dictionary = {
-	ArrowType.NORMAL: 1.5,   # 150% damage
+	ArrowType.NORMAL: 2,   # 200% damage
 	ArrowType.AOE: 0.8,      # 80% damage
 	ArrowType.POISON: 0.3    # 30% damage
 }
@@ -31,7 +31,7 @@ const ARROW_NAMES: Dictionary = {
 
 func _on_initialize() -> void:
 	ability_name = "Arrow Switch"
-	description = "Chuyển đổi loại tên: Normal (150%), AOE (80% + nổ/bẫy), Poison (30% + độc)"
+	description = "Chuyển đổi loại tên: Normal (200%), AOE (80% + nổ/bẫy), Poison (30% + độc)"
 	cooldown = 0.5  # Short cooldown để switch nhanh
 	mana_cost = 0.0
 	
@@ -79,8 +79,10 @@ func spawn_current_arrow(direction: Vector2) -> Node:
 	
 	var arrow = arrow_scenes[current_arrow_type].instantiate()
 	
-	# Calculate damage
-	var base_dmg = player.base_stats.base_damage if player and player.base_stats else 30.0
+	# Calculate damage - lấy từ base_stats.base_damage (đã bao gồm upgrades)
+	var base_dmg := 30.0
+	if player and player.base_stats:
+		base_dmg = player.base_stats.base_damage
 	var final_damage = base_dmg * DAMAGE_MULTIPLIERS[current_arrow_type]
 	
 	# Setup arrow

@@ -90,7 +90,7 @@ func physics_update(_delta: float) -> void:
 
 func handle_input(controller: PlayerController) -> void:
 	# Allow dash cancel
-	if controller.is_dash_pressed() and player.can_dash():
+	if controller.get_dash_input() and player.can_dash():
 		get_parent().change_state("DashState")
 		return
 	

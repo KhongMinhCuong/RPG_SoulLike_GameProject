@@ -1,4 +1,4 @@
-extends "res://Player/Scripts/player_api.gd"
+extends PlayerAPI
 class_name Player
 
 ## Concrete Player implementation - kết nối State Machine và Controller

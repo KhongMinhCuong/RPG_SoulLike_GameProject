@@ -25,9 +25,9 @@ signal hit_enemy(enemy: Node, damage: float)
 signal projectile_destroyed()
 
 func _ready() -> void:
-	# Flip sprite theo hướng
-	if direction.x < 0:
-		scale.x = -1
+	# Rotate sprite theo góc của direction (cho air attack chếch góc và hướng đúng)
+	# Khi bắn sang trái, direction.angle() sẽ trả về PI (180độ) → mũi tên quay đúng
+	rotation = direction.angle()
 	
 	# Start lifetime timer
 	var timer = Timer.new()
@@ -65,9 +65,10 @@ func _on_body_entered(body: Node) -> void:
 
 ## Khi va chạm với area (Hurtbox của enemy)
 func _on_area_entered(area: Area2D) -> void:
-	# Check if this is a hurtbox
-	var body = area.get_parent()
-	_handle_hit(body)
+	# Hurtbox.owner là enemy, không phải get_parent()
+	var target = area.owner if area.owner else area.get_parent()
+	if target:
+		_handle_hit(target)
 
 func _handle_hit(target: Node) -> void:
 	# Skip nếu đã hit target này rồi
@@ -106,14 +107,19 @@ func _handle_hit(target: Node) -> void:
 			_destroy()
 
 ## Calculate final damage (có thể override trong subclass)
+## Áp dụng critical hit cho direct arrow damage
 func _calculate_damage() -> float:
 	var final_damage = damage
 	
-	# Có thể thêm damage modifiers từ player
-	if owner_player and owner_player.has_node("AbilityManager"):
-		var _ability_mgr = owner_player.get_node("AbilityManager")
-		# Notify passives có thể modify damage
-		# (Lưu ý: cần implement notify_projectile_damage trong ability_manager)
+	# Áp dụng Critical Hit cho mũi tên trực tiếp
+	if owner_player and owner_player.base_stats:
+		var stats = owner_player.base_stats
+		var crit_roll = randf()  # Random từ 0.0 đến 1.0
+		
+		if crit_roll < stats.critical_chance:
+			# Critical Hit!
+			final_damage *= stats.critical_multiplier
+			print("[Projectile] CRITICAL HIT! Damage: %.1f (x%.1f)" % [final_damage, stats.critical_multiplier])
 	
 	return final_damage
 

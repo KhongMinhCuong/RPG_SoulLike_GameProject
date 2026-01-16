@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Player/Scripts/Projectiles/archer_laser_beam.gd" id="1"]
+
+[node name="ArcherLaserBeam" type="Line2D"]
+width = 8.0
+default_color = Color(0.2, 1, 0.8, 1)
+script = ExtResource("1")
+beam_length = 500.0
+beam_width = 8.0
+beam_duration = 0.5
+fade_duration = 0.3

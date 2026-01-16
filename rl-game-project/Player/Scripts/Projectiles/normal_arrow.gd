@@ -8,10 +8,10 @@ func _ready() -> void:
 	
 	# Normal arrow: 150% damage
 	# Damage được set từ bên ngoài khi spawn
+	print("[NormalArrow] Spawned with damage: %.1f" % damage)
 
-func _calculate_damage() -> float:
-	# Normal arrow đã có damage multiplier được apply khi spawn
-	return damage
+# KHÔNG override _calculate_damage() để sử dụng critical hit logic từ parent class
+# func _calculate_damage() đã có trong PlayerProjectile với critical hit
 
 func _on_destroy() -> void:
 	# Có thể spawn particle effect
