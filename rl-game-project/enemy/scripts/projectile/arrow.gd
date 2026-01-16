@@ -10,6 +10,7 @@ func _ready() -> void:
 		offset *= -1
 	else:
 		flip_h = false
+	
 	hitbox.enable()
 
 func _physics_process(delta: float) -> void:
