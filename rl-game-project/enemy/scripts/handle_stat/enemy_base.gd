@@ -35,9 +35,11 @@ func _ready():
 	health = max_health
 
 func _process(delta: float):
-	if health <= 0:
-		var sm = get_node("StateMachine")
-		sm.on_child_transition(sm.current_state, "EnemyDeath")
+	var bt = get_node("BeehaveTree")
+	if not bt:
+		if health <= 0:
+			var sm = get_node("StateMachine")
+			sm.on_child_transition(sm.current_state, "EnemyDeath")
 
 func _physics_process(delta):
 	# gravity
@@ -55,9 +57,13 @@ func take_damage(damage, is_parry := false):
 	is_parry_stun = is_parry
 	print("Enemy hit! HP:", health)
 	
-	# overide mọi state
-	var sm = get_node("StateMachine")
-	sm.on_child_transition(sm.current_state, "EnemyHurtstun")
+	#check beehavetree
+	var bt = get_node("BeehaveTree")
+	if not bt:
+		# lấy state machine
+		# overide mọi state
+		var sm = get_node("StateMachine")
+		sm.on_child_transition(sm.current_state, "EnemyHurtstun")
 
 func get_attack_damage() -> float:
 	return damage
