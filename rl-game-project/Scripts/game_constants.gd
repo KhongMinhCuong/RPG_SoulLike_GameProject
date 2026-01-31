@@ -7,4 +7,3 @@ const GAME_MANAGER_PATH: String = "/root/GameManager"
 # Common group names
 const ENEMY_GROUP: String = "Enemy"
 const PLAYER_GROUP: String = "Player"
-

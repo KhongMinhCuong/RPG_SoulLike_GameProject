@@ -36,19 +36,19 @@ Hệ thống này cho phép mỗi nhân vật có:
    - **Di chuyển vào `Player/Scenes/`**
    
    - Lặp lại cho:
-     - `player_rogue.tscn`
-     - `player_tank.tscn`
-     - `player_mage.tscn`
+	 - `player_rogue.tscn`
+	 - `player_tank.tscn`
+	 - `player_mage.tscn`
 
 **Kết quả:**
 ```
 Player/
   player.tscn              # Scene gốc (có thể xóa sau)
   Scenes/
-    player_warrior.tscn    ✅
-    player_rogue.tscn      ✅
-    player_tank.tscn       ✅
-    player_mage.tscn       ✅
+	player_warrior.tscn    ✅
+	player_rogue.tscn      ✅
+	player_tank.tscn       ✅
+	player_mage.tscn       ✅
 ```
 
 ---
@@ -155,14 +155,14 @@ Mỗi nhân vật có kích thước hitbox khác nhau:
    ```
    Control (Root)
    └── VBoxContainer
-       ├── Label (Title: "SELECT CHARACTER")
-       ├── CharacterList (VBoxContainer)
-       ├── DetailPanel (VBoxContainer)
-       │   ├── Portrait (TextureRect)
-       │   ├── Name (Label)
-       │   ├── Description (Label)
-       │   └── Stats (Label)
-       └── StartButton (Button)
+	   ├── Label (Title: "SELECT CHARACTER")
+	   ├── CharacterList (VBoxContainer)
+	   ├── DetailPanel (VBoxContainer)
+	   │   ├── Portrait (TextureRect)
+	   │   ├── Name (Label)
+	   │   ├── Description (Label)
+	   │   └── Stats (Label)
+	   └── StartButton (Button)
    ```
 
 4. **Load character data:**
@@ -214,10 +214,10 @@ Nếu muốn mỗi class có mechanics khác nhau:
 1. **Tạo script mới:**
    ```
    Player/Scripts/
-     player_warrior.gd
-     player_rogue.gd
-     player_tank.gd
-     player_mage.gd
+	 player_warrior.gd
+	 player_rogue.gd
+	 player_tank.gd
+	 player_mage.gd
    ```
 
 2. **Extend base player:**
@@ -226,12 +226,12 @@ Nếu muốn mỗi class có mechanics khác nhau:
    extends "res://Player/Scripts/player.gd"
    
    func _ready():
-       super._ready()
-       # Warrior-specific setup
+	   super._ready()
+	   # Warrior-specific setup
    
    func special_ability():
-       # Warrior special: Power Strike
-       pass
+	   # Warrior special: Power Strike
+	   pass
    ```
 
 3. **Attach script vào scene:**

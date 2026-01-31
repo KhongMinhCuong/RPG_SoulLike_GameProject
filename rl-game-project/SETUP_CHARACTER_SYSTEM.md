@@ -203,26 +203,26 @@ Points: 80
 ```gdscript
 # Trong character_selection.gd
 func _populate_character_list():
-    for i in range(available_characters.size()):
-        var character = available_characters[i]
-        var button = Button.new()
-        
-        # Lock nhân vật theo điều kiện
-        if character.character_id == "assassin" and not GameManager.has_unlocked("assassin"):
-            button.disabled = true
-            button.text = "??? (Locked)"
-        else:
-            button.text = character.character_name
+	for i in range(available_characters.size()):
+		var character = available_characters[i]
+		var button = Button.new()
+		
+		# Lock nhân vật theo điều kiện
+		if character.character_id == "assassin" and not GameManager.has_unlocked("assassin"):
+			button.disabled = true
+			button.text = "??? (Locked)"
+		else:
+			button.text = character.character_name
 ```
 
 ### Random stats mỗi run:
 ```gdscript
 # Trong character_data.gd
 func randomize_stats():
-    var total = 100
-    starting_strength = randi() % 10
-    starting_vitality = randi() % 10
-    # ... phân phối random
+	var total = 100
+	starting_strength = randi() % 10
+	starting_vitality = randi() % 10
+	# ... phân phối random
 ```
 
 ### Stat modifiers:
