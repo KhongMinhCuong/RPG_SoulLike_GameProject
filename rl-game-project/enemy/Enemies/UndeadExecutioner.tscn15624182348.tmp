@@ -633,7 +633,7 @@ height = 34.153816
 radius = 8.0
 height = 48.0
 
-[node name="UndeadExecutioner" type="CharacterBody2D" groups=["Enemy"]]
+[node name="UndeadExecutioner" type="CharacterBody2D"]
 collision_layer = 2
 script = ExtResource("1_fspeh")
 

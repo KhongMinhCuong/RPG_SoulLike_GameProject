@@ -50,3 +50,10 @@ func disable():
 	for shape in get_children():
 		if shape is CollisionShape2D:
 			shape.disabled = true
+
+func enable():
+	monitoring = true
+	monitorable = true
+	for shape in get_children():
+		if shape is CollisionShape2D:
+			shape.disabled = false
