@@ -65,14 +65,14 @@ scale = Vector2(0.15, 0.15)
 texture_normal = ExtResource("6_pi42a")
 texture_pressed = ExtResource("5_v7dth")
 
-[node name="CharacterBody2D" parent="." instance=ExtResource("9_h1jm5")]
-position = Vector2(367, 193)
+[node name="Archer" parent="." instance=ExtResource("9_h1jm5")]
+position = Vector2(352, 213)
 
 [node name="Skeleton" parent="." instance=ExtResource("7_ynsuh")]
-position = Vector2(577, 195)
+position = Vector2(614, 223)
 
 [node name="Wizard" parent="." instance=ExtResource("10_pio1y")]
-position = Vector2(803, 190)
+position = Vector2(805, 222)
 
 [connection signal="pressed" from="PlaygroundUI/DamageButton" to="PlaygroundUI" method="_on_damage_button_pressed"]
 [connection signal="pressed" from="PlaygroundUI/ResetButton" to="PlaygroundUI" method="_on_reset_button_pressed"]

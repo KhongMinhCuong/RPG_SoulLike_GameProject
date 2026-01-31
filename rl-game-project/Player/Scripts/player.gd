@@ -93,6 +93,7 @@ func _ready() -> void:
 			touch_controls.dash_pressed.connect(_on_dash_pressed)
 			touch_controls.parry_pressed.connect(_on_parry_pressed)
 			touch_controls.sp_atk_pressed.connect(_on_sp_atk_pressed)
+			touch_controls.unique_pressed.connect(_on_unique_pressed)
 		else:
 			push_warning("TouchControls not assigned to Player.")
 	
@@ -254,6 +255,11 @@ func _on_sp_atk_pressed() -> void:
 	"""Touch button special - set flag trong LocalController"""
 	if controller and controller is LocalController:
 		controller._special_pressed = true
+
+func _on_unique_pressed() -> void:
+	"""Touch button unique - trigger ability_1 (Q key)"""
+	if ability_manager and ability_manager.has_method("use_ability_by_input"):
+		ability_manager.use_ability_by_input("ability_1")
 
 # === ABILITY MANAGER SETUP ===
 

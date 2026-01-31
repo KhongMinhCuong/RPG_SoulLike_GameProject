@@ -7,6 +7,9 @@ const GameConstants = preload("res://Scripts/game_constants.gd")
 
 @onready var touch_controls = $Control/TouchControls  # Reference đến touch controls
 
+var total_enemies: int = 0
+var defeated_enemies: int = 0
+
 func _ready() -> void:
 	print("[Playground] Scene loaded")
 	
@@ -15,6 +18,43 @@ func _ready() -> void:
 	
 	# Spawn player theo character đã chọn
 	_spawn_player()
+	
+	# Đếm số lượng enemy ban đầu và kết nối signal
+	_count_initial_enemies()
+
+func _count_initial_enemies() -> void:
+	"""Đếm số enemy ban đầu và kết nối signal tree_exited"""
+	var enemies = get_tree().get_nodes_in_group("Enemy")
+	total_enemies = enemies.size()
+	defeated_enemies = 0
+	
+	print("[Playground] Found ", total_enemies, " enemies")
+	
+	for enemy in enemies:
+		# Kết nối signal khi enemy bị xóa khỏi scene tree (khi chết)
+		enemy.tree_exited.connect(_on_enemy_defeated)
+	
+	# Nếu không có enemy nào, chuyển ngay sang boss level
+	if total_enemies == 0:
+		_goto_boss_level()
+
+func _on_enemy_defeated() -> void:
+	"""Khi một enemy bị tiêu diệt"""
+	defeated_enemies += 1
+	print("[Playground] Enemy defeated! ", defeated_enemies, "/", total_enemies)
+	
+	# Nếu tất cả enemy đã bị tiêu diệt, chuyển sang boss level
+	if defeated_enemies >= total_enemies:
+		_goto_boss_level()
+
+func _goto_boss_level() -> void:
+	"""Chuyển sang màn boss"""
+	print("[Playground] All enemies defeated! Going to boss level...")
+	
+	# Chuyển scene sang boss level
+	var result = get_tree().change_scene_to_file("res://BossLevels/scene/FirstBossLevel.tscn")
+	if result != OK:
+		push_error("[Playground] Failed to change to boss level! Error code: ", result)
 
 func _spawn_player() -> void:
 	"""Spawn player instance theo character đã chọn từ GameManager"""

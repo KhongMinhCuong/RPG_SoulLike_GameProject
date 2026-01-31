@@ -585,7 +585,7 @@ tracks/0/path = NodePath(".")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.45),
+"times": PackedFloat32Array(0, 0.4, 0.5),
 "transitions": PackedFloat32Array(1, 1, 1),
 "values": [{
 "args": [&"1_atk"],
@@ -609,7 +609,7 @@ tracks/0/path = NodePath(".")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5, 0.55, 0.7, 0.75),
+"times": PackedFloat32Array(0, 0.5, 0.6, 0.7, 0.8),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "values": [{
 "args": [&"2_atk"],
@@ -766,8 +766,7 @@ shape = SubResource("RectangleShape2D_edjgo")
 [node name="Sprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_xl8ig")
-animation = &"sp_atk"
-frame = 12
+animation = &"1_atk"
 offset = Vector2(0, -63)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -855,10 +854,12 @@ script = ExtResource("151_y7oqx")
 metadata/_custom_type_script = "uid://dmruf56l76xem"
 
 [node name="HurtShape" type="CollisionShape2D" parent="Hurtbox"]
+visible = false
 position = Vector2(0, -17.5)
 shape = SubResource("RectangleShape2D_6rexp")
 
 [node name="Hitbox" type="Area2D" parent="."]
+visible = false
 script = ExtResource("152_hd7b1")
 metadata/_custom_type_script = "uid://prsrjd5xwfrm"
 

@@ -50,10 +50,8 @@ func goto_game() -> void:
 		push_error("[GameManager] No character selected!")
 		return
 	
-	# Lấy game scene path từ character data
-	var game_scene_path = selected_character.game_scene_path
-	if game_scene_path.is_empty():
-		game_scene_path = "res://enemy/scenes/game.tscn"  # Fallback to default
+	# Luôn chuyển đến playground scene để đánh quái trước
+	var game_scene_path = "res://playground.tscn"
 	
 	print("[GameManager] Game scene path: ", game_scene_path)
 	
