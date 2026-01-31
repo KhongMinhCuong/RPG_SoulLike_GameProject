@@ -16,6 +16,7 @@ class_name EnemyBase
 @export var gravity: float = 900.0
 @export var chase_range: float = 250.0
 @export var is_attacking: bool = false
+@export var is_flying: bool = false
 
 var stun_duration := 0
 var is_parry_stun := false
@@ -42,11 +43,12 @@ func _process(delta: float):
 			sm.on_child_transition(sm.current_state, "EnemyDeath")
 
 func _physics_process(delta):
-	# gravity
-	if not is_on_floor():
-		velocity.y += gravity * delta
-	else:
-		velocity.y = 0
+	# gravity (disabled for flying enemies)
+	if not is_flying:
+		if not is_on_floor():
+			velocity.y += gravity * delta
+		else:
+			velocity.y = 0
 
 	move_and_slide();
 

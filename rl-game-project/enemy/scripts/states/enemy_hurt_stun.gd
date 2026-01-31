@@ -23,7 +23,7 @@ func enter():
 		enemy.animated_sprite.animation_finished.connect(play_idle_animation)
 func update(delta):
 	stun_time -= delta
-	
+
 	if stun_time <= 0:
 		emit_signal("transition", self, "EnemyAttack")
 

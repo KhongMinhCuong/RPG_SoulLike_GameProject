@@ -13,6 +13,20 @@
 [node name="FirstBossLevel" type="Node2D"]
 script = ExtResource("1_iehvn")
 
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="Marker2D" type="Marker2D" parent="Node2D"]
+position = Vector2(-112, 8)
+
+[node name="Marker2D2" type="Marker2D" parent="Node2D"]
+position = Vector2(38, -60)
+
+[node name="Marker2D3" type="Marker2D" parent="Node2D"]
+position = Vector2(239, -60)
+
+[node name="Marker2D4" type="Marker2D" parent="Node2D"]
+position = Vector2(382, 17)
+
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 follow_viewport_enabled = true
 
@@ -70,8 +84,9 @@ tile_map_data = PackedByteArray("AAAeAA4AAgAJAAkAAAAeAA0AAgAJAAkAAAAeAAwAAgAJAAk
 tile_set = ExtResource("7_la6es")
 
 [node name="Player" parent="." instance=ExtResource("8_wf4f3")]
-position = Vector2(-198, 126)
+position = Vector2(-19, 121)
 
-[node name="UndeadExecutioner" parent="." instance=ExtResource("9_y5t28")]
-position = Vector2(147, 94)
+[node name="UndeadExecutioner" parent="." node_paths=PackedStringArray("teleport_point_entry") instance=ExtResource("9_y5t28")]
+position = Vector2(118, 82)
 scale = Vector2(2, 2)
+teleport_point_entry = NodePath("../Node2D")

@@ -318,7 +318,7 @@ _data = {
 &"attack": SubResource("Animation_gljfb")
 }
 
-[node name="Archer" type="CharacterBody2D"]
+[node name="Archer" type="CharacterBody2D" groups=["Enemy"]]
 script = ExtResource("1_ekj3j")
 attack_cooldown = 3.0
 attack_range = 150.0
@@ -335,13 +335,21 @@ shape = SubResource("CapsuleShape2D_p52c2")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_ekj3j")
-animation = &"walk"
+animation = &"idle"
 autoplay = "idle"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_afpjq")
 }
+
+[node name="Hurtbox" type="Area2D" parent="."]
+script = ExtResource("11_v8m7k")
+metadata/_custom_type_script = "uid://dmruf56l76xem"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(4, 0)
+shape = SubResource("CapsuleShape2D_p52c2")
 
 [node name="PatrolPoints" type="Node2D" parent="."]
 
@@ -385,11 +393,3 @@ metadata/_custom_type_script = "uid://c0cy3058krhq6"
 
 [node name="EnemyDeath" type="Node" parent="StateMachine"]
 script = ExtResource("14_afpjq")
-
-[node name="Hurtbox" type="Area2D" parent="."]
-script = ExtResource("11_v8m7k")
-metadata/_custom_type_script = "uid://dmruf56l76xem"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(4, 0)
-shape = SubResource("CapsuleShape2D_p52c2")

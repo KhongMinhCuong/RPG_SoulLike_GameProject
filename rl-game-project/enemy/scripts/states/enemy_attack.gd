@@ -51,6 +51,7 @@ func update(delta: float) -> void:
 	if distance > monster.attack_range * 1.5:
 		emit_signal("transition", self, "EnemyChase")
 		return
+	
 
 	# Cooldown
 	if attack_timer > 0:

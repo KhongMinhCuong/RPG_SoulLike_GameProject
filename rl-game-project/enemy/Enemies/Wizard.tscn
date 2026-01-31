@@ -475,7 +475,7 @@ animations = [{
 "speed": 8.0
 }]
 
-[node name="Wizard" type="CharacterBody2D"]
+[node name="Wizard" type="CharacterBody2D" groups=["Enemy"]]
 script = ExtResource("1_dxqiy")
 attack_cooldown = 3.0
 attack_range = 150.0
@@ -495,7 +495,6 @@ sprite_frames = SubResource("SpriteFrames_a6lbe")
 animation = &"attack"
 autoplay = "idle"
 frame = 9
-frame_progress = 0.5066717
 
 [node name="OrbSpawn" type="Node2D" parent="."]
 position = Vector2(40, -9)

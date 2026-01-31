@@ -633,9 +633,15 @@ height = 34.153816
 radius = 8.0
 height = 48.0
 
-[node name="UndeadExecutioner" type="CharacterBody2D" groups=["Enemy"]]
+[node name="UndeadExecutioner" type="CharacterBody2D"]
 collision_layer = 2
 script = ExtResource("1_fspeh")
+move_speed = null
+melee_range = null
+summon_cooldown = null
+hover_offset = null
+max_health = null
+attack_cooldown = null
 
 [node name="Health" parent="." instance=ExtResource("16_fspeh")]
 offset_left = -31.0
